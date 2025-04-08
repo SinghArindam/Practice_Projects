@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Apple Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .apple-gradient-text {
+            background: linear-gradient(90deg, #8686f7, #ff5e62);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .hero-section {
+            background: radial-gradient(ellipse at top, #1a1a1a 0%, #000 70%);
+            height: 100vh;
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #8686f7;
+            transition: width 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .apple-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        .apple-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 20px 25px -5px rgba(134, 134, 247, 0.1), 0 10px 10px -5px rgba(134, 134, 247, 0.04);
+            border-color: rgba(134, 134, 247, 0.3);
+        }
+        
+        .apple-button {
+            background: linear-gradient(90deg, #8686f7, #ff5e62);
+            color: white;
+            border-radius: 30px;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        .apple-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(134, 134, 247, 0.3);
+        }
+        
+        .apple-secondary-button {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        .apple-secondary-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+        
+        .floating {
+            animation: floating 8s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+            transform: translateY(30px);
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+        
+        .apple-section-title {
+            font-size: 72px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #fff, rgba(255, 255, 255, 0.6));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .apple-divider {
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, #8686f7, #ff5e62);
+            margin: 30px auto;
+        }
+        
+        .apple-chip {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 4px 12px;
+            font-size: 12px;
+            display: inline-block;
+        }
+        
+        .apple-timeline-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #8686f7, #ff5e62);
+            position: absolute;
+            left: -8px;
+            top: 8px;
+        }
+        
+        .apple-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        .apple-input:focus {
+            outline: none;
+            border-color: #8686f7;
+            background: rgba(134, 134, 247, 0.1);
+        }
+        
+        .apple-glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-2xl font-semibold apple-gradient-text">PORTFOLIO</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Home</a>
+                        <a href="#about" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">About</a>
+                        <a href="#work" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Work</a>
+                        <a href="#projects" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Projects</a>
+                        <a href="#contact" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Contact</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-300 hover:text-white focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-black/95 backdrop-blur-md">
+            <div class="px-4 pt-2 pb-3 space-y-2 sm:px-5">
+                <a href="#home" class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white">Home</a>
+                <a href="#about" class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white">About</a>
+                <a href="#work" class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white">Work</a>
+                <a href="#projects" class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white">Projects</a>
+                <a href="#contact" class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section flex items-center justify-center relative">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="fade-in">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                    <span class="apple-gradient-text">Alex Carter</span>
+                </h1>
+                <h2 class="text-2xl md:text-3xl font-medium mb-8 text-gray-400">
+                    Digital Designer & Full Stack Developer
+                </h2>
+                <div class="flex justify-center space-x-4">
+                    <a href="#projects" class="apple-button px-8 py-3 font-medium">
+                        View Work
+                    </a>
+                    <a href="#contact" class="apple-secondary-button px-8 py-3 font-medium text-white">
+                        Contact Me
+                    </a>
+                </div>
+            </div>
+            
+            <div class="mt-20 fade-in">
+                <img src="https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80" alt="Developer" class="rounded-3xl mx-auto w-full max-w-2xl floating border border-gray-800">
+            </div>
+        </div>
+        
+        <div class="scroll-indicator fade-in">
+            <svg width="30" height="50" viewBox="0 0 30 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="1" width="28" height="48" rx="14" stroke="white" stroke-opacity="0.5" stroke-width="2"/>
+                <circle cx="15" cy="15" r="5" fill="white" fill-opacity="0.5">
+                    <animate attributeName="cy" values="15;35;15" dur="2s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-32 bg-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 fade-in">
+                <h2 class="apple-section-title">About Me</h2>
+                <div class="apple-divider"></div>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Creating digital experiences that are both beautiful and functional.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div class="fade-in">
+                    <div class="relative">
+                        <div class="absolute -inset-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl opacity-20 blur-3xl"></div>
+                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="About Me" class="rounded-2xl relative w-full">
+                    </div>
+                </div>
+                <div class="fade-in">
+                    <h3 class="text-3xl font-semibold mb-6">Designer & Developer</h3>
+                    <p class="text-gray-400 mb-6 text-lg">
+                        With over 7 years of experience in digital design and development, I specialize in creating seamless user experiences across web and mobile platforms.
+                    </p>
+                    <p class="text-gray-400 mb-8 text-lg">
+                        My approach combines aesthetic sensibility with technical precision, resulting in products that are as enjoyable to use as they are to look at.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-6 mb-10">
+                        <div class="apple-card p-6">
+                            <div class="text-3xl mb-3 apple-gradient-text">
+                                <i class="fas fa-pencil-ruler"></i>
+                            </div>
+                            <h4 class="text-xl font-medium mb-2">UI/UX Design</h4>
+                            <p class="text-gray-400">Crafting intuitive interfaces with user psychology in mind</p>
+                        </div>
+                        <div class="apple-card p-6">
+                            <div class="text-3xl mb-3 apple-gradient-text">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h4 class="text-xl font-medium mb-2">Development</h4>
+                            <p class="text-gray-400">Building robust, scalable applications</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <a href="#" class="apple-button px-6 py-2 font-medium">
+                            Download CV
+                        </a>
+                        <a href="#work" class="apple-secondary-button px-6 py-2 font-medium text-white">
+                            My Experience
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Work Section -->
+    <section id="work" class="py-32 bg-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 fade-in">
+                <h2 class="apple-section-title">Work Experience</h2>
+                <div class="apple-divider"></div>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    My professional journey through the tech industry
+                </p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <!-- Timeline item 1 -->
+                <div class="relative pl-8 mb-16 fade-in">
+                    <div class="apple-timeline-dot"></div>
+                    <div class="apple-glass p-8">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                            <h3 class="text-2xl font-semibold text-white">Senior Product Designer</h3>
+                            <span class="text-purple-400 text-sm font-medium apple-chip">2021 - Present</span>
+                        </div>
+                        <h4 class="text-lg text-gray-300 mb-2">Apple Inc.</h4>
+                        <p class="text-gray-400">
+                            Leading design initiatives for Apple's ecosystem of products. Collaborating with engineering teams to implement design systems and maintain consistency across platforms.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Timeline item 2 -->
+                <div class="relative pl-8 mb-16 fade-in">
+                    <div class="apple-timeline-dot"></div>
+                    <div class="apple-glass p-8">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                            <h3 class="text-2xl font-semibold text-white">UI/UX Designer</h3>
+                            <span class="text-purple-400 text-sm font-medium apple-chip">2018 - 2021</span>
+                        </div>
+                        <h4 class="text-lg text-gray-300 mb-2">Adobe</h4>
+                        <p class="text-gray-400">
+                            Designed interfaces for Creative Cloud applications. Contributed to the development of design systems and worked closely with developers to ensure pixel-perfect implementation.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Timeline item 3 -->
+                <div class="relative pl-8 fade-in">
+                    <div class="apple-timeline-dot"></div>
+                    <div class="apple-glass p-8">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                            <h3 class="text-2xl font-semibold text-white">Design Intern</h3>
+                            <span class="text-purple-400 text-sm font-medium apple-chip">2017 - 2018</span>
+                        </div>
+                        <h4 class="text-lg text-gray-300 mb-2">Facebook</h4>
+                        <p class="text-gray-400">
+                            Assisted in designing components for Facebook's mobile apps. Learned industry-standard design tools and workflows while contributing to real projects.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-32 bg-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 fade-in">
+                <h2 class="apple-section-title">Featured Projects</h2>
+                <div class="apple-divider"></div>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Selected work that showcases my design and development capabilities
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Project 1 -->
+                <div class="fade-in">
+                    <div class="apple-card overflow-hidden h-full">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Project 1" class="w-full h-64 object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-6">
+                                <span class="apple-chip mb-2">UI/UX Design</span>
+                                <h3 class="text-2xl font-semibold mb-2">Apple Music Redesign</h3>
+                                <p class="text-gray-300">A fresh take on music discovery</p>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-400 mb-6">
+                                Complete redesign of the Apple Music interface focusing on discovery and personalization. Implemented new animations and transitions to enhance the user experience.
+                            </p>
+                            <a href="#" class="text-purple-400 hover:text-purple-300 font-medium flex items-center">
+                                View Case Study <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project 2 -->
+                <div class="fade-in">
+                    <div class="apple-card overflow-hidden h-full">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80" alt="Project 2" class="w-full h-64 object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-6">
+                                <span class="apple-chip mb-2">Web Development</span>
+                                <h3 class="text-2xl font-semibold mb-2">Adobe Portfolio</h3>
+                                <p class="text-gray-300">Artist portfolio platform</p>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-400 mb-6">
+                                Developed a platform for artists to showcase their work with customizable templates. Integrated with Creative Cloud for seamless asset management.
+                            </p>
+                            <a href="#" class="text-purple-400 hover:text-purple-300 font-medium flex items-center">
+                                View Case Study <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-16 fade-in">
+                <a href="#" class="apple-button px-8 py-3 font-medium inline-flex items-center">
+                    View All Projects <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-32 bg-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 fade-in">
+                <h2 class="apple-section-title">Get In Touch</h2>
+                <div class="apple-divider"></div>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Interested in working together? Let's talk about your project.
+                </p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto apple-glass p-8 rounded-3xl fade-in">
+                <form>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="name" class="block text-gray-300 mb-2">Name</label>
+                            <input type="text" id="name" class="apple-input w-full px-4 py-3 text-white placeholder-gray-500" placeholder="Your name">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-gray-300 mb-2">Email</label>
+                            <input type="email" id="email" class="apple-input w-full px-4 py-3 text-white placeholder-gray-500" placeholder="your@email.com">
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <label for="subject" class="block text-gray-300 mb-2">Subject</label>
+                        <input type="text" id="subject" class="apple-input w-full px-4 py-3 text-white placeholder-gray-500" placeholder="Project inquiry">
+                    </div>
+                    <div class="mb-8">
+                        <label for="message" class="block text-gray-300 mb-2">Message</label>
+                        <textarea id="message" rows="5" class="apple-input w-full px-4 py-3 text-white placeholder-gray-500" placeholder="Tell me about your project..."></textarea>
+                    </div>
+                    <button type="submit" class="apple-button w-full px-6 py-3 font-medium">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+            
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center fade-in">
+                <div class="apple-card p-6">
+                    <div class="text-2xl mb-3 apple-gradient-text">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h4 class="text-lg font-medium mb-2">Email</h4>
+                    <a href="mailto:hello@example.com" class="text-gray-400 hover:text-purple-400">hello@example.com</a>
+                </div>
+                <div class="apple-card p-6">
+                    <div class="text-2xl mb-3 apple-gradient-text">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h4 class="text-lg font-medium mb-2">Phone</h4>
+                    <a href="tel:+1234567890" class="text-gray-400 hover:text-purple-400">+1 (234) 567-890</a>
+                </div>
+                <div class="apple-card p-6">
+                    <div class="text-2xl mb-3 apple-gradient-text">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h4 class="text-lg font-medium mb-2">Location</h4>
+                    <p class="text-gray-400">Cupertino, California</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-black border-t border-gray-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <span class="text-2xl font-semibold apple-gradient-text">PORTFOLIO</span>
+                </div>
+                <div class="flex space-x-6 mb-6 md:mb-0">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-dribbble text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                </div>
+                <div class="text-gray-500 text-sm">
+                    &copy; 2023 Alex Carter. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // Close mobile menu if open
+                    mobileMenu.classList.add('hidden');
+                    
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Scroll animation
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeInOnScroll = () => {
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementTop < windowHeight - 100) {
+                    element.classList.add('visible');
+                }
+            });
+        };
+        
+        // Check on initial load
+        fadeInOnScroll();
+        
+        // Check on scroll
+        window.addEventListener('scroll', fadeInOnScroll);
+        
+        // Apple-like hover effects for cards
+        const appleCards = document.querySelectorAll('.apple-card');
+        
+        appleCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const angleX = (y - centerY) / 20;
+                const angleY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
