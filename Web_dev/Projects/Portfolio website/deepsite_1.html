@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Portfolio | Elite Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splinetool/runtime@1.0.55/build/runtime.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <style>
+        :root {
+            --amoled-black: #000000;
+            --amoled-white: #ffffff;
+            --amoled-red: #ff0000;
+            --amoled-blue: #0000ff;
+            --amoled-gold: #ffd700;
+        }
+        
+        .dark {
+            --bg-primary: var(--amoled-black);
+            --bg-secondary: #121212;
+            --text-primary: var(--amoled-white);
+            --text-secondary: #cccccc;
+            --accent: var(--amoled-red);
+            --highlight: var(--amoled-gold);
+            --card-bg: rgba(18, 18, 18, 0.85);
+        }
+        
+        .light {
+            --bg-primary: var(--amoled-white);
+            --bg-secondary: #f1f1f1;
+            --text-primary: #000000;
+            --text-secondary: #333333;
+            --accent: var(--amoled-blue);
+            --highlight: var(--amoled-gold);
+            --card-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Typewriter Effect */
+        .typewriter-text {
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 0 auto;
+            animation: typing 3s steps(40, end), blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-right-color: transparent; }
+            50% { border-right-color: var(--highlight); }
+        }
+
+        /* 3D Card */
+        .project-card {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: perspective(1000px) rotateX(0) rotateY(0);
+            backface-visibility: hidden;
+            will-change: transform;
+        }
+
+        .project-card:hover {
+            transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.05);
+        }
+
+        /* Theme transition */
+        .theme-transition {
+            transition: background-color 0.8s cubic-bezier(0.65, 0.05, 0.36, 1),
+                        color 0.8s cubic-bezier(0.65, 0.05, 0.36, 1);
+        }
+
+        /* Toggle button */
+        .theme-toggle-track {
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle-thumb {
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .light .theme-toggle-thumb {
+            transform: translateX(1.75rem);
+        }
+
+        /* Particle Sphere */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+    </style>
+</head>
+<body class="theme-transition bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans">
+    <!-- Particle Canvas Background -->
+    <canvas id="particleCanvas"></canvas>
+    
+    <!-- Navigation -->
+    <nav class="fixed w-full py-4 px-8 flex justify-between items-center z-50 backdrop-blur-sm bg-opacity-20">
+        <div class="text-2xl font-bold tracking-wide">
+            <span class="text-[var(--accent)]">$</span><span class="text-[var(--highlight)]">10K</span><span>PORTFOLIO</span>
+        </div>
+        <div class="flex space-x-8">
+            <a href="#about" class="hover:text-[var(--accent)] transition-colors">About</a>
+            <a href="#projects" class="hover:text-[var(--accent)] transition-colors">Projects</a>
+            <a href="#contact" class="hover:text-[var(--accent)] transition-colors">Contact</a>
+            
+            <!-- Theme Toggle -->
+            <button id="themeToggle" class="flex items-center focus:outline-none">
+                <span class="mr-2">🌙</span>
+                <div class="relative">
+                    <div class="w-14 h-8 bg-gray-700 rounded-full theme-toggle-track flex items-center p-1"></div>
+                    <div class="absolute top-1 left-1 bg-[var(--highlight)] w-6 h-6 rounded-full theme-toggle-thumb flex items-center justify-center">
+                        <span>⚪</span>
+                    </div>
+                </div>
+                <span class="ml-2">☀️</span>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute w-full h-full bg-gradient-to-b from-transparent via-[var(--bg-primary)] to-[var(--bg-primary)] z-10"></div>
+        
+        <div class="relative z-20 text-center px-4">
+            <div class="mb-6">
+                <div class="text-xl tracking-widest mb-2">
+                    <span class="text-[var(--accent)]">{DEVELOPER}</span>
+                    <span class="text-[var(--highlight)]">•</span>
+                    <span class="text-[var(--accent)]">{DESIGNER}</span>
+                </div>
+                <h1 class="text-7xl md:text-9xl font-extrabold">
+                    <span class="text-[var(--highlight)]">ALEX</span> 
+                    <span class="text-[var(--accent)]">THORNE</span>
+                </h1>
+            </div>
+            
+            <div class="mt-16 mb-12">
+                <h2 class="typewriter-text text-3xl md:text-5xl font-mono inline-block border-r-4 border-[var(--highlight)] text-[var(--text-primary)]">
+                    CREATING DIGITAL EXPERIENCES WORTH $10,000+
+                </h2>
+            </div>
+            
+            <div class="mt-20 flex justify-center">
+                <a href="#projects" class="px-10 py-4 bg-[var(--accent)] hover:bg-[var(--highlight)] transition-colors font-bold tracking-widest transform hover:scale-105 transition-transform shadow-lg shadow-[var(--accent)]/30 hover:shadow-[var(--highlight)]/50 rounded-full">
+                    VIEW PORTFOLIO
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Projects Section -->
+    <section id="projects" class="min-h-screen py-24 px-4 bg-[var(--bg-secondary)]">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl md:text-6xl font-bold mb-24 text-center">
+                <span class="text-[var(--accent)]">PREMIUM</span> 
+                <span class="text-[var(--highlight)]">PROJECTS</span>
+            </h2>
+            
+            <div class="relative">
+                <div id="projectCards" class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <!-- Project cards will be added dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-16 px-8 bg-[var(--bg-secondary)]">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-[var(--highlight)] font-bold text-2xl">$10,000 PORTFOLIO EXPERIENCE</p>
+            <p class="mt-4 text-[var(--text-secondary)]">© 2023 Elite Designs. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Set up AMOLED color scheme
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        amoledBlack: '#000000',
+                        amoledWhite: '#FFFFFF',
+                        amoledRed: '#FF0000',
+                        amoledBlue: '#0000FF',
+                        amoledGold: '#FFD700'
+                    }
+                }
+            }
+        }
+        
+        // Theme toggle functionality
+        const htmlElement = document.documentElement;
+        const themeToggle = document.getElementById('themeToggle');
+        
+        // Initialize theme based on preference
+        const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDarkMode) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.add('light');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                htmlElement.classList.add('light');
+            } else {
+                htmlElement.classList.remove('light');
+                htmlElement.classList.add('dark');
+            }
+        });
+        
+        // Particle background animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Particles array
+            const particles = [];
+            const particleCount = 200;
+            
+            // Colors based on theme
+            const getParticleColor = () => {
+                return htmlElement.classList.contains('dark') ? '#FF0000' : '#0000FF';
+            };
+            
+            const getHighlightColor = () => {
+                return '#FFD700'; // Gold for both themes
+            };
+            
+            // Particle class
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 3 + 1;
+                    this.speedX = Math.random() * 3 - 1.5;
+                    this.speedY = Math.random() * 3 - 1.5;
+                    this.alpha = Math.random();
+                    this.color = Math.random() > 0.85 ? getHighlightColor() : getParticleColor();
+                }
+                
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    
+                    // Keep particles within canvas
+                    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+                    
+                    // Fade in and out
+                    this.alpha += Math.random() * 0.01;
+                    if (this.alpha >= 1) this.alpha = 0;
+                }
+                
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = this.alpha;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Draw connecting lines
+                    particles.forEach(p => {
+                        const dx = this.x - p.x;
+                        const dy = this.y - p.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 150) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = this.color;
+                            ctx.globalAlpha = this.alpha * 0.2;
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(this.x, this.y);
+                            ctx.lineTo(p.x, p.y);
+                            ctx.stroke();
+                        }
+                    });
+                }
+            }
+            
+            // Create particles
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+            
+            // Animation loop
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            
+            // Start animation
+            animate();
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                
+                // Reset particles after resize
+                while(particles.length < particleCount) {
+                    particles.push(new Particle());
+                }
+            });
+        });
+        
+        // Project Cards Data
+        const projects = [
+            {
+                title: "Quantum Finance App",
+                description: "Blockchain-powered financial platform with AI trading insights",
+                role: "Lead Developer & UI Designer",
+                value: "$15,000",
+                tech: "React • Web3 • Firebase"
+            },
+            {
+                title: "Augmented Reality E-commerce",
+                description: "3D product visualization and AR try-on experience",
+                role: "AR Developer & UX Lead",
+                value: "$18,500",
+                tech: "Three.js • ARCore • Node.js"
+            },
+            {
+                title: "NeuroFitness AI Trainer",
+                description: "Computer vision workout coach with form correction",
+                role: "AI Specialist & Product Designer",
+                value: "$22,000",
+                tech: "TensorFlow • React Native • Python"
+            },
+            {
+                title: "Art Gallery Metaverse",
+                description: "Virtual reality gallery with blockchain-based art marketplace",
+                role: "VR Developer & System Architect",
+                value: "$27,000",
+                tech: "Unity • WebGL • Solidity"
+            },
+            {
+                title: "Smart City Dashboard",
+                description: "Real-time city data visualization for urban planning",
+                role: "Data Visualization Lead",
+                value: "$14,500",
+                tech: "D3.js • Mapbox • Express"
+            },
+            {
+                title: "Sustainable Travel Platform",
+                description: "Carbon-neutral travel itinerary planning with blockchain verification",
+                role: "Full-Stack Developer",
+                value: "$19,750",
+                tech: "React • GraphQL • MongoDB"
+            }
+        ];
+        
+        // Create project cards
+        const projectCards = document.getElementById('projectCards');
+        
+        projects.forEach((project, index) => {
+            const card = document.createElement('div');
+            card.classList.add('project-card', 'rounded-3xl', 'overflow-hidden', 'shadow-xl', 'p-8', 'text-left', 'h-full', 'border', 'border-[var(--accent)]');
+            card.style.backgroundColor = 'var(--card-bg)';
+            card.style.boxShadow = '0 25px 50px -12px var(--accent)';
+            card.style.backdropFilter = 'blur(10px)';
+            
+            // Add delay based on index
+            const transitionDelay = index * 0.1;
+            card.style.transitionDelay = `${transitionDelay}s`;
+            
+            card.innerHTML = `
+                <div class="relative">
+                    <span class="absolute top-0 right-0 text-[var(--highlight)] font-bold text-5xl">${index + 1}</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 mt-6 text-[var(--highlight)]">${project.title}</h3>
+                <p class="text-[var(--text-secondary)] mb-5">${project.description}</p>
+                <p class="text-[var(--accent)] font-medium">${project.role}</p>
+                <p class="text-lg my-4 font-bold">Value: <span class="text-[var(--highlight)]">${project.value}</span></p>
+                <div class="mt-6">
+                    <p class="text-[var(--highlight)] font-mono">${project.tech}</p>
+                </div>
+                <div class="mt-10">
+                    <button class="bg-[var(--accent)] hover:bg-[var(--highlight)] text-[var(--text-primary)] py-2 px-6 rounded-full transition-colors">
+                        View Case Study
+                    </button>
+                </div>
+            `;
+            
+            projectCards.appendChild(card);
+        });
+    </script>
+</body>
+</html>
