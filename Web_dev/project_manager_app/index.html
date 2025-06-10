@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .project-card {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .tag {
+            transition: all 0.2s ease;
+        }
+        .tag:hover {
+            transform: scale(1.05);
+        }
+        .status-badge.completed {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: rgb(16, 185, 129);
+        }
+        .status-badge.in-progress {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: rgb(245, 158, 11);
+        }
+        .status-badge.planned {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: rgb(59, 130, 246);
+        }
+        .status-badge.on-hold {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: rgb(239, 68, 68);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .card-expand {
+            transition: all 0.3s ease;
+        }
+        .card-expand:hover {
+            transform: scale(1.02);
+        }
+        .filter-tag {
+            transition: all 0.2s ease;
+        }
+        .filter-tag:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .filter-tag.active {
+            background-color: #6366f1;
+            color: white;
+        }
+        .slide-in {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Project Dashboard</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Track and manage all your projects in one place</p>
+            
+            <!-- Filter Controls -->
+            <div class="flex flex-wrap justify-center gap-3 mt-6">
+                <button onclick="filterProjects('all')" class="filter-tag px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition active">
+                    All Projects
+                </button>
+                <button onclick="filterProjects('completed')" class="filter-tag px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100 transition">
+                    Completed
+                </button>
+                <button onclick="filterProjects('in-progress')" class="filter-tag px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100 transition">
+                    In Progress
+                </button>
+                <button onclick="filterProjects('planned')" class="filter-tag px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100 transition">
+                    Planned
+                </button>
+                <button onclick="filterProjects('on-hold')" class="filter-tag px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100 transition">
+                    On Hold
+                </button>
+            </div>
+
+            <!-- Technology Filter -->
+            <div class="mt-6">
+                <label for="technologyFilter" class="block text-sm font-medium text-gray-700 mb-2">Filter by Technology:</label>
+                <select id="technologyFilter" onchange="filterByTechnology()" class="border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500">
+                    <option value="all">All Technologies</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+        </div>
+
+        <!-- Projects Grid -->
+        <div id="projectsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Project cards will be inserted here dynamically -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-12">
+            <div class="mx-auto max-w-md">
+                <i class="fas fa-folder-open text-5xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-medium text-gray-700 mb-2">No projects found</h3>
+                <p class="text-gray-500 mb-4">Add a new project or adjust your filters</p>
+                <button id="addProjectBtnEmpty" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full inline-flex items-center transition">
+                    <i class="fas fa-plus mr-2"></i> Add Project
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Project Button -->
+        <div class="fixed bottom-8 right-8">
+            <button id="addProjectBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-110">
+                <i class="fas fa-plus text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Add/Edit Project Modal -->
+    <div id="projectModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0"></div>
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4 card-expand slide-in">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 id="modalTitle" class="text-xl font-bold text-gray-800">Add New Project</h3>
+                        <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <form id="projectForm" class="space-y-4">
+                        <input type="hidden" id="projectId">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="projectName" class="block text-sm font-medium text-gray-700 mb-1">Project Name *</label>
+                                <input type="text" id="projectName" required class="w-full border border-gray-300 rounded-lg py-2 px-3 form-input focus:outline-none focus:border-indigo-500">
+                            </div>
+                            
+                            <div>
+                                <label for="projectStatus" class="block text-sm font-medium text-gray-700 mb-1">Status *</label>
+                                <select id="projectStatus" required class="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500">
+                                    <option value="planned">Planned</option>
+                                    <option value="in-progress">In Progress</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="on-hold">On Hold</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="projectImage" class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                            <input type="url" id="projectImage" class="w-full border border-gray-300 rounded-lg py-2 px-3 form-input focus:outline-none focus:border-indigo-500">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="projectDateRange" class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                                <input type="text" id="projectDateRange" placeholder="e.g. Jan 2023 - Mar 2023" class="w-full border border-gray-300 rounded-lg py-2 px-3 form-input focus:outline-none focus:border-indigo-500">
+                            </div>
+                            
+                            <div>
+                                <label for="projectTechnologies" class="block text-sm font-medium text-gray-700 mb-1">Technologies (comma separated) *</label>
+                                <input type="text" id="projectTechnologies" required placeholder="e.g. React, Node.js, MongoDB" class="w-full border border-gray-300 rounded-lg py-2 px-3 form-input focus:outline-none focus:border-indigo-500">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="projectDescription" class="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+                            <textarea id="projectDescription" rows="3" required class="w-full border border-gray-300 rounded-lg py-2 px-3 form-input focus:outline-none focus:border-indigo-500"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="projectTags" class="block text-sm font-medium text-gray-700 mb-1">Tags (comma separated)</label>
+                            <input type="text" id="projectTags" placeholder="e.g. web, mobile, api" class="w-full border border-gray-300 rounded-lg py-2 px-3 form-input focus:outline-none focus:border-indigo-500">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label for="projectGithub" class="block text-sm font-medium text-gray-700 mb-1">GitHub Link</label>
+                                <input type="url" id="projectGithub" class="w-full border border-gray-300 rounded-lg py-2 px-3 form-input focus:outline-none focus:border-indigo-500">
+                            </div>
+                            
+                            <div>
+                                <label for="projectDemo" class="block text-sm font-medium text-gray-700 mb-1">Demo Link</label>
+                                <input type="url" id="projectDemo" class="w-full border border-gray-300 rounded-lg py-2 px-3 form-input focus:outline-none focus:border-indigo-500">
+                            </div>
+                            
+                            <div>
+                                <label for="projectReadme" class="block text-sm font-medium text-gray-700 mb-1">README Link</label>
+                                <input type="url" id="projectReadme" class="w-full border border-gray-300 rounded-lg py-2 px-3 form-input focus:outline-none focus:border-indigo-500">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="projectNotes" class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                            <textarea id="projectNotes" rows="3" class="w-full border border-gray-300 rounded-lg py-2 px-3 form-input focus:outline-none focus:border-indigo-500"></textarea>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3 pt-4">
+                            <button type="button" id="cancelModalBtn" class="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition">
+                                Cancel
+                            </button>
+                            <button type="submit" id="saveProjectBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition">
+                                Save Project
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Details Modal -->
+    <div id="detailsModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0"></div>
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4 card-expand slide-in">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 id="detailsTitle" class="text-xl font-bold text-gray-800">Project Details</h3>
+                        <button id="closeDetailsBtn" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="detailsContent" class="space-y-4">
+                        <!-- Details will be populated here -->
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 pt-6">
+                        <button id="deleteDetailsBtn" class="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition">
+                            Delete Project
+                        </button>
+                        <button id="editDetailsBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition">
+                            Edit Project
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0"></div>
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white rounded-xl shadow-xl w-full max-w-md m-4 card-expand slide-in">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-gray-800">Confirm Deletion</h3>
+                        <button id="closeDeleteBtn" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <p id="deleteMessage" class="text-gray-700 mb-6">Are you sure you want to delete this project?</p>
+                    
+                    <div class="flex justify-end space-x-3">
+                        <button id="cancelDeleteBtn" class="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition">
+                            Cancel
+                        </button>
+                        <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample initial data
+        let projects = [
+            {
+                id: "1",
+                name: "E-commerce Website",
+                image_link: "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                date_range: "Mar 2023 - Jun 2023",
+                description: "A full-featured e-commerce platform with product listings, cart functionality, and payment processing.",
+                tags: ["web", "ecommerce", "react"],
+                github_link: "https://github.com/example/ecommerce",
+                demo_link: "https://ecommerce.example.com",
+                readme_link: "https://github.com/example/ecommerce/blob/main/README.md",
+                status: "completed",
+                technologies: ["React", "Node.js", "MongoDB", "Stripe"],
+                notes: "The project was completed on time and under budget. Customer satisfaction was high.",
+                created_at: "2023-03-15T10:00:00Z",
+                updated_at: "2023-06-20T14:30:00Z"
+            },
+            {
+                id: "2",
+                name: "Mobile Task Manager",
+                image_link: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                date_range: "Jul 2023 - Present",
+                description: "A cross-platform mobile application for task management with sync across devices.",
+                tags: ["mobile", "productivity", "react-native"],
+                github_link: "https://github.com/example/task-manager",
+                demo_link: "",
+                readme_link: "https://github.com/example/task-manager/blob/main/README.md",
+                status: "in-progress",
+                technologies: ["React Native", "Firebase", "Redux"],
+                notes: "Currently working on the offline sync functionality. Expected completion in Q4 2023.",
+                created_at: "2023-07-01T09:15:00Z",
+                updated_at: "2023-08-10T16:45:00Z"
+            },
+            {
+                id: "3",
+                name: "API Service",
+                image_link: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                date_range: "",
+                description: "Backend API service for data processing and integration with third-party services.",
+                tags: ["api", "backend", "node"],
+                github_link: "https://github.com/example/api-service",
+                demo_link: "",
+                readme_link: "",
+                status: "on-hold",
+                technologies: ["Node.js", "Express", "PostgreSQL"],
+                notes: "Project put on hold due to shifting priorities. Will revisit in Q1 2024.",
+                created_at: "2023-05-10T14:20:00Z",
+                updated_at: "2023-08-01T11:10:00Z"
+            },
+            {
+                id: "4",
+                name: "Portfolio Website",
+                image_link: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                date_range: "Apr 2023",
+                description: "Personal portfolio website showcasing projects, skills, and contact information.",
+                tags: ["web", "portfolio", "tailwind"],
+                github_link: "https://github.com/example/portfolio",
+                demo_link: "https://portfolio.example.com",
+                readme_link: "https://github.com/example/portfolio/blob/main/README.md",
+                status: "completed",
+                technologies: ["HTML", "CSS", "JavaScript", "Tailwind CSS"],
+                notes: "Simple and clean design that highlights my work effectively.",
+                created_at: "2023-04-01T08:00:00Z",
+                updated_at: "2023-04-15T12:30:00Z"
+            },
+            {
+                id: "5",
+                name: "Weather Dashboard",
+                image_link: "https://images.unsplash.com/photo-1601134467661-3d775b999c8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                date_range: "Jul 2023 - Present",
+                description: "Interactive weather application showing current conditions and forecasts.",
+                tags: ["web", "weather", "api"],
+                github_link: "https://github.com/example/weather-app",
+                demo_link: "https://weather.example.com",
+                readme_link: "https://github.com/example/weather-app/blob/main/README.md",
+                status: "in-progress",
+                technologies: ["React", "OpenWeather API", "Chart.js"],
+                notes: "Currently adding historical data visualization features.",
+                created_at: "2023-07-10T09:30:00Z",
+                updated_at: "2023-08-05T15:20:00Z"
+            },
+            {
+                id: "6",
+                name: "Recipe Finder",
+                image_link: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                date_range: "Coming Soon",
+                description: "Discover recipes based on ingredients you have with nutritional information.",
+                tags: ["mobile", "food", "api"],
+                github_link: "",
+                demo_link: "",
+                readme_link: "",
+                status: "planned",
+                technologies: ["React Native", "Spoonacular API"],
+                notes: "Planning phase - gathering requirements and designing UI.",
+                created_at: "2023-08-01T10:00:00Z",
+                updated_at: "2023-08-01T10:00:00Z"
+            }
+        ];
+
+        // DOM Elements
+        const projectsContainer = document.getElementById('projectsContainer');
+        const emptyState = document.getElementById('emptyState');
+        const addProjectBtnEmpty = document.getElementById('addProjectBtnEmpty');
+        const addProjectBtn = document.getElementById('addProjectBtn');
+        const technologyFilter = document.getElementById('technologyFilter');
+
+        // Modal Elements
+        const projectModal = document.getElementById('projectModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const projectForm = document.getElementById('projectForm');
+        const projectId = document.getElementById('projectId');
+        const projectName = document.getElementById('projectName');
+        const projectImage = document.getElementById('projectImage');
+        const projectDateRange = document.getElementById('projectDateRange');
+        const projectDescription = document.getElementById('projectDescription');
+        const projectTags = document.getElementById('projectTags');
+        const projectGithub = document.getElementById('projectGithub');
+        const projectDemo = document.getElementById('projectDemo');
+        const projectReadme = document.getElementById('projectReadme');
+        const projectStatus = document.getElementById('projectStatus');
+        const projectTechnologies = document.getElementById('projectTechnologies');
+        const projectNotes = document.getElementById('projectNotes');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+        const saveProjectBtn = document.getElementById('saveProjectBtn');
+
+        // Details Modal Elements
+        const detailsModal = document.getElementById('detailsModal');
+        const detailsTitle = document.getElementById('detailsTitle');
+        const detailsContent = document.getElementById('detailsContent');
+        const closeDetailsBtn = document.getElementById('closeDetailsBtn');
+        const editDetailsBtn = document.getElementById('editDetailsBtn');
+        const deleteDetailsBtn = document.getElementById('deleteDetailsBtn');
+
+        // Delete Modal Elements
+        const deleteModal = document.getElementById('deleteModal');
+        const deleteMessage = document.getElementById('deleteMessage');
+        const closeDeleteBtn = document.getElementById('closeDeleteBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+        // State
+        let currentProjectId = null;
+        let currentFilter = 'all';
+        let currentTechnologyFilter = 'all';
+        let allTechnologies = [];
+
+        // Initialize the app
+        function init() {
+            renderProjects(projects);
+            setupEventListeners();
+            updateTechnologyFilter();
+        }
+
+        // Render all projects
+        function renderProjects(projectsToRender) {
+            projectsContainer.innerHTML = '';
+            
+            if (projectsToRender.length === 0) {
+                emptyState.classList.remove('hidden');
+                projectsContainer.classList.add('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                projectsContainer.classList.remove('hidden');
+                
+                projectsToRender.forEach(project => {
+                    const projectCard = createProjectCard(project);
+                    projectsContainer.appendChild(projectCard);
+                });
+            }
+        }
+
+        // Create a project card element
+        function createProjectCard(project) {
+            const card = document.createElement('div');
+            card.className = 'project-card bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg fade-in';
+            card.dataset.id = project.id;
+            card.dataset.status = project.status;
+            card.dataset.technologies = project.technologies ? project.technologies.join(',') : '';
+            
+            // Determine status text and styling
+            let statusText, statusClass;
+            switch(project.status) {
+                case 'completed':
+                    statusText = 'Completed';
+                    statusClass = 'completed';
+                    break;
+                case 'in-progress':
+                    statusText = 'In Progress';
+                    statusClass = 'in-progress';
+                    break;
+                case 'planned':
+                    statusText = 'Planned';
+                    statusClass = 'planned';
+                    break;
+                case 'on-hold':
+                    statusText = 'On Hold';
+                    statusClass = 'on-hold';
+                    break;
+            }
+            
+            // Card content
+            card.innerHTML = `
+                <div class="h-48 overflow-hidden">
+                    ${project.image_link ? 
+                        `<img src="${project.image_link}" alt="${project.name}" class="w-full h-full object-cover">` : 
+                        `<div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <i class="fas fa-image text-4xl text-gray-400"></i>
+                        </div>`
+                    }
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-semibold text-gray-800">${project.name}</h3>
+                        <span class="status-badge ${statusClass} text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            ${statusText}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">${project.description || 'No description available'}</p>
+                    
+                    ${project.technologies && project.technologies.length > 0 ? 
+                        `<div class="flex flex-wrap gap-2 mb-2">
+                            ${project.technologies.map(tech => `
+                                <span class="tag text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+                                    ${tech}
+                                </span>
+                            `).join('')}
+                        </div>` : ''
+                    }
+                    
+                    ${project.tags && project.tags.length > 0 ? 
+                        `<div class="flex flex-wrap gap-2 mb-4">
+                            ${project.tags.map(tag => `
+                                <span class="tag text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full">
+                                    ${tag}
+                                </span>
+                            `).join('')}
+                        </div>` : ''
+                    }
+                    
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <span>${project.date_range || 'No date specified'}</span>
+                        <div class="flex space-x-2">
+                            ${project.github_link ? `
+                                <a href="${project.github_link}" target="_blank" class="text-gray-700 hover:text-gray-900 transition" title="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            ` : ''}
+                            
+                            ${project.demo_link ? `
+                                <a href="${project.demo_link}" target="_blank" class="text-gray-700 hover:text-gray-900 transition" title="Live Demo">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            ` : ''}
+                            
+                            ${project.readme_link ? `
+                                <a href="${project.readme_link}" target="_blank" class="text-gray-700 hover:text-gray-900 transition" title="README">
+                                    <i class="fas fa-book"></i>
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add click event for viewing details
+            card.addEventListener('click', (e) => {
+                // Don't open details if clicking on links
+                if (e.target.closest('a')) {
+                    return;
+                }
+                openDetailsModal(project.id);
+            });
+            
+            return card;
+        }
+
+        // Filter projects by status
+        function filterProjects(status) {
+            currentFilter = status;
+            
+            // Update active filter button
+            document.querySelectorAll('.filter-tag').forEach(btn => {
+                btn.classList.remove('active', 'bg-indigo-600', 'text-white');
+                if ((status === 'all' && btn.textContent.trim() === 'All Projects') || 
+                    (status !== 'all' && btn.textContent.trim() === status.charAt(0).toUpperCase() + status.slice(1))) {
+                    btn.classList.add('active', 'bg-indigo-600', 'text-white');
+                }
+            });
+            
+            // Apply both status and technology filters
+            applyFilters();
+        }
+
+        // Filter projects by technology
+        function filterByTechnology() {
+            currentTechnologyFilter = technologyFilter.value;
+            applyFilters();
+        }
+
+        // Apply both status and technology filters
+        function applyFilters() {
+            let filteredProjects = projects;
+            
+            // Apply status filter
+            if (currentFilter !== 'all') {
+                filteredProjects = filteredProjects.filter(project => project.status === currentFilter);
+            }
+            
+            // Apply technology filter
+            if (currentTechnologyFilter !== 'all') {
+                filteredProjects = filteredProjects.filter(project => 
+                    project.technologies && project.technologies.includes(currentTechnologyFilter)
+                );
+            }
+            
+            renderProjects(filteredProjects);
+        }
+
+        // Update technology filter dropdown with unique technologies
+        function updateTechnologyFilter() {
+            // Get all unique technologies from projects
+            allTechnologies = [...new Set(
+                projects.flatMap(project => project.technologies || [])
+            )].sort();
+            
+            // Clear existing options except "All Technologies"
+            while (technologyFilter.options.length > 1) {
+                technologyFilter.remove(1);
+            }
+            
+            // Add technology options
+            allTechnologies.forEach(tech => {
+                const option = document.createElement('option');
+                option.value = tech;
+                option.textContent = tech;
+                technologyFilter.appendChild(option);
+            });
+        }
+
+        // Open the add project modal
+        function openAddModal() {
+            projectForm.reset();
+            projectId.value = '';
+            modalTitle.textContent = 'Add New Project';
+            projectModal.classList.remove('hidden');
+        }
+
+        // Open the edit project modal
+        function openEditModal(id) {
+            const project = projects.find(p => p.id === id);
+            if (!project) return;
+            
+            currentProjectId = id;
+            
+            // Populate form fields
+            projectId.value = project.id;
+            projectName.value = project.name || '';
+            projectImage.value = project.image_link || '';
+            projectDateRange.value = project.date_range || '';
+            projectDescription.value = project.description || '';
+            projectTags.value = project.tags ? project.tags.join(', ') : '';
+            projectGithub.value = project.github_link || '';
+            projectDemo.value = project.demo_link || '';
+            projectReadme.value = project.readme_link || '';
+            projectStatus.value = project.status || 'planned';
+            projectTechnologies.value = project.technologies ? project.technologies.join(', ') : '';
+            projectNotes.value = project.notes || '';
+            
+            modalTitle.textContent = 'Edit Project';
+            projectModal.classList.remove('hidden');
+        }
+
+        // Open the project details modal
+        function openDetailsModal(id) {
+            const project = projects.find(p => p.id === id);
+            if (!project) return;
+            
+            currentProjectId = id;
+            
+            detailsTitle.textContent = project.name;
+            
+            // Format dates
+            const createdDate = project.created_at ? new Date(project.created_at).toLocaleDateString() : 'Unknown';
+            const updatedDate = project.updated_at ? new Date(project.updated_at).toLocaleDateString() : 'Unknown';
+            
+            // Determine status styling
+            let statusClass;
+            switch(project.status) {
+                case 'completed': statusClass = 'completed'; break;
+                case 'in-progress': statusClass = 'in-progress'; break;
+                case 'planned': statusClass = 'planned'; break;
+                case 'on-hold': statusClass = 'on-hold'; break;
+                default: statusClass = '';
+            }
+            
+            // Create details content
+            detailsContent.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        ${project.image_link ? `
+                            <div class="rounded-lg overflow-hidden">
+                                <img src="${project.image_link}" alt="${project.name}" class="w-full h-auto max-h-48 object-cover">
+                            </div>
+                        ` : ''}
+                        
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-gray-800 mb-2">Quick Info</h4>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <span class="inline-block w-3 h-3 rounded-full mr-2 ${statusClass}"></span>
+                                    <span class="text-sm text-gray-700">Status: ${project.status}</span>
+                                </div>
+                                
+                                ${project.date_range ? `
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-calendar-alt mr-2 text-gray-500"></i>
+                                        <span>${project.date_range}</span>
+                                    </div>
+                                ` : ''}
+                                
+                                <div class="flex items-center text-sm text-gray-700">
+                                    <i class="fas fa-calendar-plus mr-2 text-gray-500"></i>
+                                    <span>Created: ${createdDate}</span>
+                                </div>
+                                
+                                <div class="flex items-center text-sm text-gray-700">
+                                    <i class="fas fa-calendar-check mr-2 text-gray-500"></i>
+                                    <span>Last Updated: ${updatedDate}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        ${project.description ? `
+                            <div>
+                                <h4 class="font-medium text-gray-800 mb-1">Description</h4>
+                                <p class="text-gray-700">${project.description}</p>
+                            </div>
+                        ` : ''}
+                        
+                        ${project.technologies && project.technologies.length > 0 ? `
+                            <div>
+                                <h4 class="font-medium text-gray-800 mb-1">Technologies</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    ${project.technologies.map(tech => `
+                                        <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">${tech}</span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        ${project.tags && project.tags.length > 0 ? `
+                            <div>
+                                <h4 class="font-medium text-gray-800 mb-1">Tags</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    ${project.tags.map(tag => `
+                                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">${tag}</span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        ${project.notes ? `
+                            <div>
+                                <h4 class="font-medium text-gray-800 mb-1">Notes</h4>
+                                <p class="text-gray-700 whitespace-pre-line">${project.notes}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+                
+                <div class="pt-4 border-t">
+                    <h4 class="font-medium text-gray-800 mb-2">Links</h4>
+                    <div class="flex flex-wrap gap-4">
+                        ${project.github_link ? `
+                            <a href="${project.github_link}" target="_blank" class="flex items-center text-blue-600 hover:text-blue-800 transition">
+                                <i class="fab fa-github mr-2"></i> GitHub Repository
+                            </a>
+                        ` : ''}
+                        
+                        ${project.demo_link ? `
+                            <a href="${project.demo_link}" target="_blank" class="flex items-center text-blue-600 hover:text-blue-800 transition">
+                                <i class="fas fa-external-link-alt mr-2"></i> Live Demo
+                            </a>
+                        ` : ''}
+                        
+                        ${project.readme_link ? `
+                            <a href="${project.readme_link}" target="_blank" class="flex items-center text-blue-600 hover:text-blue-800 transition">
+                                <i class="fas fa-book mr-2"></i> README
+                            </a>
+                        ` : ''}
+                        
+                        ${!project.github_link && !project.demo_link && !project.readme_link ? `
+                            <span class="text-gray-500">No links available</span>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            detailsModal.classList.remove('hidden');
+        }
+
+        // Open the delete confirmation modal
+        function openDeleteModal(id) {
+            currentProjectId = id;
+            const project = projects.find(p => p.id === id);
+            
+            if (project) {
+                deleteMessage.textContent = `Are you sure you want to delete "${project.name}"? This action cannot be undone.`;
+            } else {
+                deleteMessage.textContent = 'Are you sure you want to delete this project?';
+            }
+            
+            deleteModal.classList.remove('hidden');
+        }
+
+        // Close all modals
+        function closeAllModals() {
+            projectModal.classList.add('hidden');
+            detailsModal.classList.add('hidden');
+            deleteModal.classList.add('hidden');
+            currentProjectId = null;
+        }
+
+        // Save project (add or edit)
+        function saveProject(e) {
+            e.preventDefault();
+            
+            // Validate required fields
+            if (!projectName.value.trim()) {
+                alert('Project name is required');
+                return;
+            }
+            
+            if (!projectDescription.value.trim()) {
+                alert('Project description is required');
+                return;
+            }
+            
+            if (!projectTechnologies.value.trim()) {
+                alert('At least one technology is required');
+                return;
+            }
+            
+            // Get form values
+            const id = projectId.value || generateId();
+            const now = new Date().toISOString();
+            
+            const projectData = {
+                id,
+                name: projectName.value.trim(),
+                image_link: projectImage.value.trim(),
+                date_range: projectDateRange.value.trim(),
+                description: projectDescription.value.trim(),
+                tags: projectTags.value ? projectTags.value.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
+                github_link: projectGithub.value.trim(),
+                demo_link: projectDemo.value.trim(),
+                readme_link: projectReadme.value.trim(),
+                status: projectStatus.value,
+                technologies: projectTechnologies.value ? projectTechnologies.value.split(',').map(tech => tech.trim()).filter(tech => tech) : [],
+                notes: projectNotes.value.trim(),
+                updated_at: now
+            };
+            
+            // If new project, set created_at
+            if (!projectId.value) {
+                projectData.created_at = now;
+            } else {
+                // For existing projects, preserve created_at
+                const existingProject = projects.find(p => p.id === projectId.value);
+                if (existingProject) {
+                    projectData.created_at = existingProject.created_at;
+                } else {
+                    projectData.created_at = now;
+                }
+            }
+            
+            // Update or add the project
+            if (projectId.value) {
+                // Edit existing project
+                const index = projects.findIndex(p => p.id === projectId.value);
+                if (index !== -1) {
+                    projects[index] = projectData;
+                }
+            } else {
+                // Add new project
+                projects.push(projectData);
+            }
+            
+            // Update UI and filters
+            updateTechnologyFilter();
+            applyFilters();
+            closeAllModals();
+        }
+
+        // Delete project
+        function deleteProject() {
+            projects = projects.filter(p => p.id !== currentProjectId);
+            
+            // Update UI and filters
+            updateTechnologyFilter();
+            applyFilters();
+            closeAllModals();
+        }
+
+        // Generate a unique ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Add project buttons
+            addProjectBtnEmpty.addEventListener('click', openAddModal);
+            addProjectBtn.addEventListener('click', openAddModal);
+            
+            // Modal buttons
+            closeModalBtn.addEventListener('click', closeAllModals);
+            cancelModalBtn.addEventListener('click', closeAllModals);
+            projectForm.addEventListener('submit', saveProject);
+            
+            // Details modal buttons
+            closeDetailsBtn.addEventListener('click', closeAllModals);
+            editDetailsBtn.addEventListener('click', () => {
+                closeAllModals();
+                openEditModal(currentProjectId);
+            });
+            deleteDetailsBtn.addEventListener('click', () => {
+                closeAllModals();
+                openDeleteModal(currentProjectId);
+            });
+            
+            // Delete modal buttons
+            closeDeleteBtn.addEventListener('click', closeAllModals);
+            cancelDeleteBtn.addEventListener('click', closeAllModals);
+            confirmDeleteBtn.addEventListener('click', deleteProject);
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+    <p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made by Arindam Singh</p>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made by Arindam Singh</p></body>
+</html>

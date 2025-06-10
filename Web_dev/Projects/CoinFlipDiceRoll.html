@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Randomizer | Coin & Dice</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff4e50;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --success: #2ecc71;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 0 1rem;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #ff4e50, #f9d423);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0c0;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .premium-badge {
+            background: linear-gradient(to right, #ff4e50, #f9d423);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 1rem;
+            box-shadow: 0 4px 15px rgba(249, 212, 35, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+        
+        .panel:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        }
+        
+        .panel-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #f9d423;
+        }
+        
+        .coin-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+            perspective: 1000px;
+        }
+        
+        .coin {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 1s;
+        }
+        
+        .coin.flipping {
+            animation: flip 1.5s ease-in-out;
+        }
+        
+        .coin-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .coin-front {
+            background: linear-gradient(145deg, #f9d423, #ff4e50);
+            color: white;
+            transform: rotateY(0deg);
+        }
+        
+        .coin-back {
+            background: linear-gradient(145deg, #3498db, #2c3e50);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .dice-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .dice-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        .dice-option {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+        
+        .dice-option:hover, .dice-option.active {
+            background: var(--secondary);
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        
+        .dice-display {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(145deg, #2575fc, #6a11cb);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 15px 35px rgba(37, 117, 252, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dice-display.rolling {
+            animation: roll 1s ease-out;
+        }
+        
+        .dice-display::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            pointer-events: none;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, var(--accent), #f9d423);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 10px 20px rgba(255, 78, 80, 0.3);
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 78, 80, 0.4);
+        }
+        
+        .result {
+            margin-top: 2rem;
+            text-align: center;
+            min-height: 60px;
+        }
+        
+        .result-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #2ecc71, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .history {
+            margin-top: 3rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+        
+        .history-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #f9d423;
+        }
+        
+        .history-items {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            color: #a0a0c0;
+            font-size: 0.9rem;
+        }
+        
+        @keyframes flip {
+            0% { transform: rotateY(0deg); }
+            50% { transform: rotateY(1800deg); }
+            100% { transform: rotateY(3600deg); }
+        }
+        
+        @keyframes roll {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(360deg) scale(1.2); }
+            100% { transform: rotate(720deg) scale(1); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(249, 212, 35, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(249, 212, 35, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(249, 212, 35, 0); }
+        }
+        
+        .coin-result, .dice-result {
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            min-height: 30px;
+            text-align: center;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Premium Randomizer</h1>
+            <p class="subtitle">Experience the ultimate in randomization technology with our premium coin flip and dice roll simulator. Perfect for games, decisions, and probability experiments.</p>
+            <div class="premium-badge">
+                <i class="fas fa-crown"></i> PREMIUM EDITION
+            </div>
+        </header>
+        
+        <div class="content">
+            <!-- Coin Flip Section -->
+            <div class="panel">
+                <h2 class="panel-title"><i class="fas fa-coins"></i> Coin Flip</h2>
+                <div class="coin-container">
+                    <div class="coin" id="coin">
+                        <div class="coin-face coin-front">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="coin-face coin-back">
+                            <i class="fas fa-question"></i>
+                        </div>
+                    </div>
+                    <button class="btn" id="flipCoin">Flip Coin</button>
+                    <div class="coin-result" id="coinResult">
+                        Click "Flip Coin" to start
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dice Roll Section -->
+            <div class="panel">
+                <h2 class="panel-title"><i class="fas fa-dice"></i> Dice Roll</h2>
+                <div class="dice-container">
+                    <div class="dice-selector">
+                        <div class="dice-option active" data-sides="4">D4</div>
+                        <div class="dice-option" data-sides="6">D6</div>
+                        <div class="dice-option" data-sides="8">D8</div>
+                        <div class="dice-option" data-sides="10">D10</div>
+                        <div class="dice-option" data-sides="12">D12</div>
+                    </div>
+                    <div class="dice-display" id="diceDisplay">
+                        4
+                    </div>
+                    <button class="btn" id="rollDice">Roll Dice</button>
+                    <div class="dice-result" id="diceResult">
+                        Select a dice and click "Roll Dice"
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="history">
+            <h3 class="history-title"><i class="fas fa-history"></i> Result History</h3>
+            <div class="history-items" id="historyItems">
+                <!-- History items will be added here -->
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 Premium Randomizer | $10,000 Value Randomization Technology</p>
+        </footer>
+    </div>
+
+    <script>
+        // Coin flip functionality
+        const coin = document.getElementById('coin');
+        const flipCoinBtn = document.getElementById('flipCoin');
+        const coinResult = document.getElementById('coinResult');
+        
+        flipCoinBtn.addEventListener('click', () => {
+            // Reset coin
+            coin.classList.remove('flipping');
+            void coin.offsetWidth; // Trigger reflow
+            
+            // Start flipping animation
+            coin.classList.add('flipping');
+            
+            // Determine result after animation
+            setTimeout(() => {
+                const result = Math.random() < 0.5 ? 'Heads' : 'Tails';
+                coinResult.textContent = `Result: ${result}`;
+                coinResult.style.color = '#2ecc71';
+                
+                // Add to history
+                addToHistory(`Coin: ${result}`);
+            }, 1500);
+        });
+        
+        // Dice roll functionality
+        const diceOptions = document.querySelectorAll('.dice-option');
+        const diceDisplay = document.getElementById('diceDisplay');
+        const rollDiceBtn = document.getElementById('rollDice');
+        const diceResult = document.getElementById('diceResult');
+        let selectedSides = 4;
+        
+        // Set active dice
+        diceOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                diceOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                selectedSides = parseInt(option.getAttribute('data-sides'));
+                diceDisplay.textContent = selectedSides;
+                diceResult.textContent = `Ready to roll D${selectedSides}`;
+                diceResult.style.color = 'white';
+            });
+        });
+        
+        rollDiceBtn.addEventListener('click', () => {
+            // Reset dice
+            diceDisplay.classList.remove('rolling');
+            void diceDisplay.offsetWidth; // Trigger reflow
+            
+            // Start rolling animation
+            diceDisplay.classList.add('rolling');
+            
+            // Determine result after animation
+            setTimeout(() => {
+                const result = Math.floor(Math.random() * selectedSides) + 1;
+                diceDisplay.textContent = result;
+                diceResult.textContent = `Result: ${result}`;
+                diceResult.style.color = '#2ecc71';
+                
+                // Add to history
+                addToHistory(`D${selectedSides}: ${result}`);
+            }, 1000);
+        });
+        
+        // History functionality
+        const historyItems = document.getElementById('historyItems');
+        let historyCount = 0;
+        
+        function addToHistory(text) {
+            historyCount++;
+            const historyItem = document.createElement('div');
+            historyItem.classList.add('history-item');
+            historyItem.textContent = text;
+            
+            // Add to beginning of history
+            historyItems.insertBefore(historyItem, historyItems.firstChild);
+            
+            // Limit history to 12 items
+            if (historyItems.children.length > 12) {
+                historyItems.removeChild(historyItems.lastChild);
+            }
+        }
+        
+        // Initialize with some history
+        addToHistory("D6: 4");
+        addToHistory("Coin: Tails");
+        addToHistory("D10: 7");
+        addToHistory("Coin: Heads");
+    </script>
+</body>
+</html>

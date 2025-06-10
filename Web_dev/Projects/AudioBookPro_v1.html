@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioBook Pro - EPUB to Audiobook Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #0ea5e9;
+            --accent-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --dark-bg: #0f172a;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--light-bg) 0%, #e2e8f0 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .upload-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            border: 2px dashed var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .upload-section.dragover {
+            border-color: var(--accent-color);
+            background: rgba(6, 182, 212, 0.05);
+            transform: scale(1.02);
+        }
+
+        .upload-zone {
+            text-align: center;
+            padding: 60px 20px;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        .upload-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .upload-text p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color) 0%, var(--success-color) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .book-info {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .book-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .book-cover {
+            width: 120px;
+            height: 160px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .book-details h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .book-meta {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .tts-settings {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .setting-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .setting-group select,
+        .setting-group input {
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .setting-group select:focus,
+        .setting-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .chapters-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .chapters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .chapter-item {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .chapter-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .chapter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .chapter-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+        }
+
+        .chapter-meta {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .chapter-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .chapter-status {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .status-converting {
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid var(--warning-color);
+            color: var(--warning-color);
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+        }
+
+        .audio-player {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .audio-player audio {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success-color);
+        }
+
+        .notification.error {
+            background: var(--error-color);
+        }
+
+        .notification.warning {
+            background: var(--warning-color);
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .footer p {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .upload-section {
+                padding: 20px;
+            }
+
+            .book-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .chapters-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .chapter-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .chapter-controls {
+                justify-content: center;
+            }
+        }
+
+        /* Accessibility improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .btn:focus,
+        select:focus,
+        input:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📚 AudioBook Pro</h1>
+            <p>Transform your EPUB books into high-quality audiobooks with advanced AI text-to-speech</p>
+        </header>
+
+        <main>
+            <!-- Upload Section -->
+            <section class="upload-section" id="uploadSection">
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-icon">📤</div>
+                    <div class="upload-text">
+                        <h3>Upload Your EPUB File</h3>
+                        <p>Drag and drop your EPUB file here, or click to browse</p>
+                        <p><small>Maximum file size: 100MB | Supported format: .epub</small></p>
+                        <button class="btn btn-primary" id="browseBtn">
+                            <span id="browseText">Choose EPUB File</span>
+                        </button>
+                    </div>
+                </div>
+                <input type="file" id="fileInput" class="file-input" accept=".epub" aria-label="Choose EPUB file">
+                <div class="progress-bar" id="uploadProgress" style="display: none;">
+                    <div class="progress-fill" id="uploadProgressFill"></div>
+                </div>
+            </section>
+
+            <!-- Book Information -->
+            <section class="book-info" id="bookInfo">
+                <div class="book-header">
+                    <div class="book-cover" id="bookCover">📖</div>
+                    <div class="book-details">
+                        <h2 id="bookTitle">Loading...</h2>
+                        <div class="book-meta">
+                            <p><strong>Author:</strong> <span id="bookAuthor">Unknown</span></p>
+                            <p><strong>Chapters:</strong> <span id="chapterCount">0</span></p>
+                            <p><strong>Estimated Duration:</strong> <span id="estimatedDuration">0 minutes</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TTS Settings -->
+                <div class="tts-settings">
+                    <h3 style="margin-bottom: 20px;">🎙️ Audio Settings</h3>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label for="voiceSelect">Voice Selection</label>
+                            <select id="voiceSelect">
+                                <option value="AFSarah">AF Sarah (Female, Natural)</option>
+                                <option value="AFBella">AF Bella (Female, Expressive)</option>
+                                <option value="AFNick">AF Nick (Male, Professional)</option>
+                                <option value="AFAlex">AF Alex (Male, Warm)</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label for="speedRange">Speech Speed: <span id="speedValue">1.0x</span></label>
+                            <input type="range" id="speedRange" min="0.5" max="2.0" step="0.1" value="1.0">
+                        </div>
+                        <div class="setting-group">
+                            <label for="pitchRange">Pitch: <span id="pitchValue">1.0</span></label>
+                            <input type="range" id="pitchRange" min="0.5" max="1.5" step="0.1" value="1.0">
+                        </div>
+                        <div class="setting-group">
+                            <label for="qualitySelect">Audio Quality</label>
+                            <select id="qualitySelect">
+                                <option value="128">Standard (128kbps)</option>
+                                <option value="192">High (192kbps)</option>
+                                <option value="320">Premium (320kbps)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapters Section -->
+            <section class="chapters-section" id="chaptersSection">
+                <div class="chapters-header">
+                    <h3>📋 Chapters</h3>
+                    <div>
+                        <button class="btn btn-primary" id="convertAllBtn">Convert All Chapters</button>
+                        <button class="btn btn-success" id="downloadAllBtn" disabled>Download Full Audiobook</button>
+                    </div>
+                </div>
+                <div id="chaptersList"></div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>© 2025 AudioBook Pro - Professional EPUB to Audiobook Conversion</p>
+            <p>Powered by advanced AI text-to-speech technology</p>
+        </footer>
+    </div>
+
+    <!-- Notification container -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        class EPUBConverter {
+            constructor() {
+                this.currentBook = null;
+                this.chapters = [];
+                this.convertedChapters = new Map();
+                this.conversionQueue = [];
+                this.isConverting = false;
+                this.settings = {
+                    voice: 'AFSarah',
+                    speed: 1.0,
+                    pitch: 1.0,
+                    quality: '192'
+                };
+
+                this.initializeEventListeners();
+                this.initializeSettings();
+            }
+
+            initializeEventListeners() {
+                const uploadZone = document.getElementById('uploadZone');
+                const fileInput = document.getElementById('fileInput');
+                const browseBtn = document.getElementById('browseBtn');
+
+                // File upload events
+                uploadZone.addEventListener('click', () => fileInput.click());
+                uploadZone.addEventListener('dragover', this.handleDragOver.bind(this));
+                uploadZone.addEventListener('dragleave', this.handleDragLeave.bind(this));
+                uploadZone.addEventListener('drop', this.handleDrop.bind(this));
+                fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+
+                // Settings events
+                document.getElementById('speedRange').addEventListener('input', this.updateSpeed.bind(this));
+                document.getElementById('pitchRange').addEventListener('input', this.updatePitch.bind(this));
+                document.getElementById('voiceSelect').addEventListener('change', this.updateVoice.bind(this));
+                document.getElementById('qualitySelect').addEventListener('change', this.updateQuality.bind(this));
+
+                // Conversion buttons
+                document.getElementById('convertAllBtn').addEventListener('click', this.convertAllChapters.bind(this));
+                document.getElementById('downloadAllBtn').addEventListener('click', this.downloadFullAudiobook.bind(this));
+            }
+
+            initializeSettings() {
+                document.getElementById('speedValue').textContent = this.settings.speed + 'x';
+                document.getElementById('pitchValue').textContent = this.settings.pitch;
+            }
+
+            handleDragOver(e) {
+                e.preventDefault();
+                document.getElementById('uploadSection').classList.add('dragover');
+            }
+
+            handleDragLeave(e) {
+                e.preventDefault();
+                document.getElementById('uploadSection').classList.remove('dragover');
+            }
+
+            handleDrop(e) {
+                e.preventDefault();
+                document.getElementById('uploadSection').classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    this.processFile(files[0]);
+                }
+            }
+
+            handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    this.processFile(file);
+                }
+            }
+
+            async processFile(file) {
+                if (!this.validateFile(file)) {
+                    return;
+                }
+
+                this.showUploadProgress();
+                
+                try {
+                    // Simulate file upload progress
+                    await this.simulateUpload();
+                    
+                    // Parse EPUB (simulated)
+                    const bookData = await this.parseEPUB(file);
+                    
+                    this.currentBook = bookData;
+                    this.chapters = bookData.chapters;
+                    
+                    this.displayBookInfo(bookData);
+                    this.displayChapters();
+                    
+                    this.showNotification('EPUB uploaded and parsed successfully!', 'success');
+                    
+                } catch (error) {
+                    this.showNotification('Error processing EPUB file: ' + error.message, 'error');
+                } finally {
+                    this.hideUploadProgress();
+                }
+            }
+
+            validateFile(file) {
+                if (!file.name.toLowerCase().endsWith('.epub')) {
+                    this.showNotification('Please select a valid EPUB file', 'error');
+                    return false;
+                }
+
+                if (file.size > 100 * 1024 * 1024) { // 100MB
+                    this.showNotification('File size exceeds 100MB limit', 'error');
+                    return false;
+                }
+
+                return true;
+            }
+
+            async simulateUpload() {
+                const progressFill = document.getElementById('uploadProgressFill');
+                
+                for (let i = 0; i <= 100; i += 10) {
+                    progressFill.style.width = i + '%';
+                    await this.delay(100);
+                }
+            }
+
+            async parseEPUB(file) {
+                // Simulate EPUB parsing
+                await this.delay(1000);
+                
+                // Return sample book data
+                return {
+                    title: "The Digital Frontier: A Guide to Modern Technology",
+                    author: "Dr. Sarah Chen",
+                    chapters: [
+                        { id: 1, title: "Introduction to the Digital Age", wordCount: 2500, estimatedDuration: "18 minutes" },
+                        { id: 2, title: "The Evolution of Computing", wordCount: 3200, estimatedDuration: "23 minutes" },
+                        { id: 3, title: "Internet and Connectivity", wordCount: 2800, estimatedDuration: "20 minutes" },
+                        { id: 4, title: "Mobile Technology Revolution", wordCount: 3000, estimatedDuration: "22 minutes" },
+                        { id: 5, title: "Artificial Intelligence and Machine Learning", wordCount: 3500, estimatedDuration: "25 minutes" },
+                        { id: 6, title: "Cybersecurity in the Modern World", wordCount: 2900, estimatedDuration: "21 minutes" },
+                        { id: 7, title: "The Future of Work", wordCount: 2600, estimatedDuration: "19 minutes" },
+                        { id: 8, title: "Emerging Technologies and Trends", wordCount: 3100, estimatedDuration: "22 minutes" }
+                    ]
+                };
+            }
+
+            displayBookInfo(bookData) {
+                document.getElementById('bookTitle').textContent = bookData.title;
+                document.getElementById('bookAuthor').textContent = bookData.author;
+                document.getElementById('chapterCount').textContent = bookData.chapters.length;
+                
+                const totalDuration = bookData.chapters.reduce((total, chapter) => {
+                    return total + parseInt(chapter.estimatedDuration);
+                }, 0);
+                
+                document.getElementById('estimatedDuration').textContent = `${totalDuration} minutes`;
+                document.getElementById('bookInfo').style.display = 'block';
+            }
+
+            displayChapters() {
+                const chaptersList = document.getElementById('chaptersList');
+                chaptersList.innerHTML = '';
+
+                this.chapters.forEach(chapter => {
+                    const chapterElement = this.createChapterElement(chapter);
+                    chaptersList.appendChild(chapterElement);
+                });
+
+                document.getElementById('chaptersSection').style.display = 'block';
+            }
+
+            createChapterElement(chapter) {
+                const div = document.createElement('div');
+                div.className = 'chapter-item';
+                div.id = `chapter-${chapter.id}`;
+
+                div.innerHTML = `
+                    <div class="chapter-header">
+                        <div class="chapter-info">
+                            <h4>Chapter ${chapter.id}: ${chapter.title}</h4>
+                            <div class="chapter-meta">
+                                Words: ${chapter.wordCount.toLocaleString()} | Duration: ${chapter.estimatedDuration}
+                            </div>
+                        </div>
+                        <div class="chapter-controls">
+                            <button class="btn btn-primary convert-btn" onclick="converter.convertChapter(${chapter.id})">
+                                Convert to Audio
+                            </button>
+                            <button class="btn btn-success download-btn" onclick="converter.downloadChapter(${chapter.id})" style="display: none;">
+                                Download Chapter
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chapter-status" id="status-${chapter.id}"></div>
+                    <div class="audio-player" id="player-${chapter.id}">
+                        <audio controls>
+                            <source type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                `;
+
+                return div;
+            }
+
+            async convertChapter(chapterId) {
+                const chapter = this.chapters.find(c => c.id === chapterId);
+                if (!chapter) return;
+
+                const statusElement = document.getElementById(`status-${chapterId}`);
+                const convertBtn = document.querySelector(`#chapter-${chapterId} .convert-btn`);
+                const downloadBtn = document.querySelector(`#chapter-${chapterId} .download-btn`);
+
+                // Show converting status
+                statusElement.className = 'chapter-status status-converting';
+                statusElement.style.display = 'block';
+                statusElement.innerHTML = `
+                    <div class="spinner"></div>
+                    Converting "${chapter.title}" to audio...
+                    <br><small>Estimated time: ${Math.ceil(chapter.wordCount / 500)} minutes</small>
+                `;
+
+                convertBtn.disabled = true;
+                convertBtn.innerHTML = '<div class="spinner"></div> Converting...';
+
+                try {
+                    // Simulate TTS conversion
+                    const audioBlob = await this.simulateTTSConversion(chapter);
+                    
+                    // Store converted audio
+                    this.convertedChapters.set(chapterId, {
+                        blob: audioBlob,
+                        url: URL.createObjectURL(audioBlob),
+                        chapter: chapter
+                    });
+
+                    // Update UI
+                    statusElement.className = 'chapter-status status-completed';
+                    statusElement.innerHTML = `✅ Conversion completed successfully!`;
+
+                    convertBtn.style.display = 'none';
+                    downloadBtn.style.display = 'inline-block';
+
+                    // Setup audio player
+                    const audioPlayer = document.getElementById(`player-${chapterId}`);
+                    const audio = audioPlayer.querySelector('audio source');
+                    audio.src = this.convertedChapters.get(chapterId).url;
+                    audioPlayer.style.display = 'block';
+
+                    this.showNotification(`Chapter ${chapterId} converted successfully!`, 'success');
+                    this.updateDownloadAllButton();
+
+                } catch (error) {
+                    statusElement.className = 'chapter-status status-error';
+                    statusElement.innerHTML = `❌ Conversion failed: ${error.message}`;
+                    convertBtn.disabled = false;
+                    convertBtn.innerHTML = 'Retry Conversion';
+                    this.showNotification(`Failed to convert Chapter ${chapterId}`, 'error');
+                }
+            }
+
+            async simulateTTSConversion(chapter) {
+                // Simulate realistic conversion time based on word count
+                const conversionTime = Math.max(2000, chapter.wordCount * 2);
+                await this.delay(conversionTime);
+
+                // Create a simple audio blob (in reality, this would be the TTS audio)
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const duration = 2; // 2 seconds of audio
+                const sampleRate = audioContext.sampleRate;
+                const buffer = audioContext.createBuffer(1, duration * sampleRate, sampleRate);
+                
+                // Generate a simple tone (in reality, this would be speech)
+                const channelData = buffer.getChannelData(0);
+                for (let i = 0; i < buffer.length; i++) {
+                    channelData[i] = Math.sin(2 * Math.PI * 440 * i / sampleRate) * 0.1;
+                }
+
+                // Convert to blob
+                return new Blob([buffer], { type: 'audio/mpeg' });
+            }
+
+            async convertAllChapters() {
+                const convertAllBtn = document.getElementById('convertAllBtn');
+                convertAllBtn.disabled = true;
+                convertAllBtn.innerHTML = '<div class="spinner"></div> Converting All...';
+
+                for (const chapter of this.chapters) {
+                    if (!this.convertedChapters.has(chapter.id)) {
+                        await this.convertChapter(chapter.id);
+                        await this.delay(500); // Small delay between conversions
+                    }
+                }
+
+                convertAllBtn.disabled = false;
+                convertAllBtn.innerHTML = 'Convert All Chapters';
+                this.showNotification('All chapters converted successfully!', 'success');
+            }
+
+            downloadChapter(chapterId) {
+                const chapterData = this.convertedChapters.get(chapterId);
+                if (!chapterData) return;
+
+                const link = document.createElement('a');
+                link.href = chapterData.url;
+                link.download = `${this.currentBook.title} - Chapter ${chapterId}.mp3`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                this.showNotification(`Chapter ${chapterId} download started!`, 'success');
+            }
+
+            async downloadFullAudiobook() {
+                if (this.convertedChapters.size === 0) {
+                    this.showNotification('No converted chapters available', 'warning');
+                    return;
+                }
+
+                const downloadBtn = document.getElementById('downloadAllBtn');
+                downloadBtn.disabled = true;
+                downloadBtn.innerHTML = '<div class="spinner"></div> Preparing Download...';
+
+                try {
+                    // In a real implementation, you would merge all audio files
+                    // For this demo, we'll just download the first chapter as a placeholder
+                    const firstChapter = this.convertedChapters.values().next().value;
+                    
+                    const link = document.createElement('a');
+                    link.href = firstChapter.url;
+                    link.download = `${this.currentBook.title} - Full Audiobook.mp3`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+                    this.showNotification('Full audiobook download started!', 'success');
+
+                } catch (error) {
+                    this.showNotification('Error preparing full audiobook', 'error');
+                } finally {
+                    downloadBtn.disabled = false;
+                    downloadBtn.innerHTML = 'Download Full Audiobook';
+                }
+            }
+
+            updateDownloadAllButton() {
+                const downloadAllBtn = document.getElementById('downloadAllBtn');
+                if (this.convertedChapters.size > 0) {
+                    downloadAllBtn.disabled = false;
+                }
+            }
+
+            updateSpeed(e) {
+                this.settings.speed = parseFloat(e.target.value);
+                document.getElementById('speedValue').textContent = this.settings.speed + 'x';
+            }
+
+            updatePitch(e) {
+                this.settings.pitch = parseFloat(e.target.value);
+                document.getElementById('pitchValue').textContent = this.settings.pitch;
+            }
+
+            updateVoice(e) {
+                this.settings.voice = e.target.value;
+            }
+
+            updateQuality(e) {
+                this.settings.quality = e.target.value;
+            }
+
+            showUploadProgress() {
+                document.getElementById('uploadProgress').style.display = 'block';
+            }
+
+            hideUploadProgress() {
+                setTimeout(() => {
+                    document.getElementById('uploadProgress').style.display = 'none';
+                    document.getElementById('uploadProgressFill').style.width = '0%';
+                }, 1000);
+            }
+
+            showNotification(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.classList.add('show');
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // Initialize the converter
+        const converter = new EPUBConverter();
+
+        // Add keyboard navigation support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                if (e.target.classList.contains('btn')) {
+                    e.target.click();
+                }
+            }
+        });
+
+        // Add ARIA live region for screen readers
+        const ariaLive = document.createElement('div');
+        ariaLive.setAttribute('aria-live', 'polite');
+        ariaLive.setAttribute('aria-atomic', 'true');
+        ariaLive.className = 'sr-only';
+        document.body.appendChild(ariaLive);
+
+        // Update ARIA live region when notifications are shown
+        const originalShowNotification = converter.showNotification;
+        converter.showNotification = function(message, type) {
+            originalShowNotification.call(this, message, type);
+            ariaLive.textContent = message;
+        };
+    </script>
+</body>
+</html>

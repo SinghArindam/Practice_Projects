@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .form-section, .invoice-section { margin-bottom: 20px; }
+        .invoice { border: 1px solid #ccc; padding: 20px; display: none; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        button { padding: 10px; margin: 5px; }
+        .item { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Form to collect invoice data -->
+        <div class="form-section">
+            <h2>Invoice Generator</h2>
+            <form id="invoiceForm">
+                <h3>Customer Details</h3>
+                <label>Name:</label><input type="text" id="customerName" required><br><br>
+                <label>Address:</label><textarea id="customerAddress" required></textarea><br><br>
+                <label>Date:</label><input type="date" id="invoiceDate" required><br><br>
+
+                <h3>Items</h3>
+                <div id="items">
+                    <div class="item">
+                        <label>Description:</label><input type="text" class="itemDesc" required>
+                        <label>Quantity:</label><input type="number" class="itemQty" min="1" required>
+                        <label>Price:</label><input type="number" class="itemPrice" min="0" step="0.01" required>
+                    </div>
+                </div>
+                <button type="button" onclick="addItem()">Add Item</button><br><br>
+                <button type="submit">Generate Invoice</button>
+            </form>
+        </div>
+
+        <!-- Invoice Template -->
+        <div class="invoice-section">
+            <div id="invoice" class="invoice">
+                <h2>Invoice</h2>
+                <p><strong>Customer:</strong> <span id="invCustomerName"></span></p>
+                <p><strong>Address:</strong> <span id="invCustomerAddress"></span></p>
+                <p><strong>Date:</strong> <span id="invInvoiceDate"></span></p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invItems"></tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3"><strong>Total</strong></td>
+                            <td id="invTotal"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div id="invoiceActions" style="display: none;">
+                <button onclick="printInvoice()">Print Invoice</button>
+                <button onclick="downloadInvoice()">Download as PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Libraries for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        // Add new item input fields
+        function addItem() {
+            const itemsDiv = document.getElementById('items');
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item';
+            itemDiv.innerHTML = `
+                <label>Description:</label><input type="text" class="itemDesc" required>
+                <label>Quantity:</label><input type="number" class="itemQty" min="1" required>
+                <label>Price:</label><input type="number" class="itemPrice" min="0" step="0.01" required>
+                <button type="button" onclick="removeItem(this)">Remove</button><br><br>
+            `;
+            itemsDiv.appendChild(itemDiv);
+        }
+
+        // Remove an item input field
+        function removeItem(button) {
+            button.parentElement.remove();
+        }
+
+        // Handle form submission
+        document.getElementById('invoiceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get customer details
+            const customerName = document.getElementById('customerName').value;
+            const customerAddress = document.getElementById('customerAddress').value;
+            const invoiceDate = document.getElementById('invoiceDate').value;
+
+            // Populate invoice template
+            document.getElementById('invCustomerName').textContent = customerName;
+            document.getElementById('invCustomerAddress').textContent = customerAddress;
+            document.getElementById('invInvoiceDate').textContent = invoiceDate;
+
+            // Get items and populate table
+            const items = document.querySelectorAll('.item');
+            const invItems = document.getElementById('invItems');
+            invItems.innerHTML = '';
+            let total = 0;
+
+            items.forEach(item => {
+                const desc = item.querySelector('.itemDesc').value;
+                const qty = parseInt(item.querySelector('.itemQty').value);
+                const price = parseFloat(item.querySelector('.itemPrice').value);
+                const itemTotal = qty * price;
+                total += itemTotal;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${desc}</td>
+                    <td>${qty}</td>
+                    <td>$${price.toFixed(2)}</td>
+                    <td>$${itemTotal.toFixed(2)}</td>
+                `;
+                invItems.appendChild(row);
+            });
+
+            document.getElementById('invTotal').textContent = `$${total.toFixed(2)}`;
+
+            // Show invoice and actions
+            document.getElementById('invoice').style.display = 'block';
+            document.getElementById('invoiceActions').style.display = 'block';
+        });
+
+        // Print invoice
+        function printInvoice() {
+            const invoice = document.getElementById('invoice');
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write(`
+                <html>
+                <head><title>Invoice</title><style>${getInvoiceStyles()}</style></head>
+                <body>${invoice.outerHTML}</body>
+                </html>
+            `);
+            newWindow.document.close();
+            newWindow.print();
+        }
+
+        // Download invoice as PDF
+        function downloadInvoice() {
+            const { jsPDF } = window.jspdf;
+            const invoice = document.getElementById('invoice');
+
+            html2canvas(invoice, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 190; // A4 width in mm (210mm - margins)
+                const pageHeight = 295; // A4 height in mm
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 10;
+
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight + 10;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                pdf.save('invoice.pdf');
+            });
+        }
+
+        // Get invoice styles for printing
+        function getInvoiceStyles() {
+            return `
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                .invoice { border: 1px solid #ccc; padding: 20px; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; }
+            `;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .project-card {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .tag {
+            transition: all 0.2s ease;
+        }
+        .tag:hover {
+            transform: scale(1.05);
+        }
+        .status-badge.completed {
+            background-color: #10b98120;
+            color: #10b981;
+        }
+        .status-badge.in-progress {
+            background-color: #f59e0b20;
+            color: #f59e0b;
+        }
+        .status-badge.planned {
+            background-color: #3b82f620;
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">My Projects</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">A collection of my recent work, experiments, and contributions</p>
+            
+            <!-- Filter Controls -->
+            <div class="flex flex-wrap justify-center gap-3 mt-6">
+                <button onclick="filterProjects('all')" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition">All Projects</button>
+                <button onclick="filterProjects('completed')" class="px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100 transition">Completed</button>
+                <button onclick="filterProjects('in-progress')" class="px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100 transition">In Progress</button>
+                <button onclick="filterProjects('planned')" class="px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100 transition">Planned</button>
+            </div>
+        </div>
+
+        <!-- Projects Grid -->
+        <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Projects will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        // Sample project data
+        const projects = [
+            {
+                id: 1,
+                title: "E-commerce Platform",
+                description: "A full-stack e-commerce solution with payment integration, inventory management, and analytics dashboard.",
+                image: "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                status: "completed",
+                tags: ["React", "Node.js", "MongoDB", "Stripe"],
+                github: "https://github.com",
+                demo: "https://example.com",
+                date: "Jun 2023"
+            },
+            {
+                id: 2,
+                title: "Task Management App",
+                description: "Collaborative task management application with real-time updates, team assignments, and progress tracking.",
+                image: "https://images.unsplash.com/photo-1541462608143-67571c6738dd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                status: "in-progress",
+                tags: ["Vue.js", "Firebase", "Tailwind CSS"],
+                github: "https://github.com",
+                demo: null,
+                date: "Aug 2023 - Present"
+            },
+            {
+                id: 3,
+                title: "Health & Fitness Tracker",
+                description: "Mobile application for tracking workouts, nutrition, and health metrics with personalized recommendations.",
+                image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                status: "planned",
+                tags: ["React Native", "GraphQL", "PostgreSQL"],
+                github: null,
+                demo: null,
+                date: "Coming Soon"
+            },
+            {
+                id: 4,
+                title: "Portfolio Website",
+                description: "Personal portfolio website showcasing projects, skills, and contact information with a clean, modern design.",
+                image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                status: "completed",
+                tags: ["HTML", "CSS", "JavaScript"],
+                github: "https://github.com",
+                demo: "https://example.com",
+                date: "Apr 2023"
+            },
+            {
+                id: 5,
+                title: "Weather Dashboard",
+                description: "Interactive weather application showing current conditions, forecasts, and historical data visualization.",
+                image: "https://images.unsplash.com/photo-1601134467661-3d775b999c8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                status: "in-progress",
+                tags: ["React", "OpenWeather API", "Chart.js"],
+                github: "https://github.com",
+                demo: "https://example.com",
+                date: "Jul 2023 - Present"
+            },
+            {
+                id: 6,
+                title: "Recipe Finder",
+                description: "Discover recipes based on ingredients you have, with nutritional information and step-by-step instructions.",
+                image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                status: "planned",
+                tags: ["Angular", "Spoonacular API", "Bootstrap"],
+                github: null,
+                demo: null,
+                date: "Coming Soon"
+            }
+        ];
+
+        // Render all projects initially
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProjects(projects);
+        });
+
+        // Function to render projects
+        function renderProjects(projectsToRender) {
+            const container = document.getElementById('projects-container');
+            container.innerHTML = '';
+            
+            projectsToRender.forEach(project => {
+                const projectCard = document.createElement('div');
+                projectCard.className = 'project-card bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg';
+                
+                // Determine status text and styling
+                let statusText, statusClass;
+                switch(project.status) {
+                    case 'completed':
+                        statusText = 'Completed';
+                        statusClass = 'completed';
+                        break;
+                    case 'in-progress':
+                        statusText = 'In Progress';
+                        statusClass = 'in-progress';
+                        break;
+                    case 'planned':
+                        statusText = 'Planned';
+                        statusClass = 'planned';
+                        break;
+                }
+                
+                projectCard.innerHTML = `
+                    <div class="h-48 overflow-hidden">
+                        <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-semibold text-gray-800">${project.title}</h3>
+                            <span class="status-badge ${statusClass} text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                ${statusText}
+                            </span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">${project.description}</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${project.tags.map(tag => `
+                                <span class="tag text-xs bg-gray-100 text-gray-800 px-3 py-1 rounded-full">
+                                    ${tag}
+                                </span>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="flex justify-between items-center text-sm text-gray-500">
+                            <span>${project.date}</span>
+                            <div class="flex space-x-2">
+                                ${project.github ? `
+                                    <a href="${project.github}" target="_blank" class="text-gray-700 hover:text-gray-900 transition">
+                                        <i class="fab fa-github"></i>
+                                    </a>
+                                ` : ''}
+                                ${project.demo ? `
+                                    <a href="${project.demo}" target="_blank" class="text-gray-700 hover:text-gray-900 transition">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(projectCard);
+            });
+        }
+
+        // Filter projects by status
+        function filterProjects(status) {
+            if (status === 'all') {
+                renderProjects(projects);
+            } else {
+                const filteredProjects = projects.filter(project => project.status === status);
+                renderProjects(filteredProjects);
+            }
+        }
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=JamesToth/project-manager-app" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>

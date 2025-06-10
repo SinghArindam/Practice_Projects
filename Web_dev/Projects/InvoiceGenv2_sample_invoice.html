@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .form-section, .invoice-section { margin-bottom: 20px; }
+        button { padding: 10px; margin: 5px; }
+        .item { margin-bottom: 10px; }
+        #invoicePreview { border: 1px solid #ccc; padding: 20px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Form to collect invoice data -->
+        <div class="form-section">
+            <h2>Invoice Generator</h2>
+            <form id="invoiceForm">
+                <h3>Customer Details</h3>
+                <label>Name:</label><input type="text" id="customerName" required><br><br>
+                <label>Address:</label><textarea id="customerAddress" required></textarea><br><br>
+                <label>Date:</label><input type="date" id="invoiceDate" required><br><br>
+
+                <h3>Items</h3>
+                <div id="items">
+                    <div class="item">
+                        <label>Description:</label><input type="text" class="itemDesc" required>
+                        <label>Quantity:</label><input type="number" class="itemQty" min="1" required>
+                        <label>Price:</label><input type="number" class="itemPrice" min="0" step="0.01" required>
+                    </div>
+                </div>
+                <button type="button" onclick="addItem()">Add Item</button><br><br>
+                <button type="submit">Generate Invoice</button>
+            </form>
+        </div>
+
+        <!-- Invoice Preview -->
+        <div class="invoice-section">
+            <div id="invoicePreview"></div>
+            <div id="invoiceActions" style="display: none;">
+                <button onclick="printInvoice()">Print Invoice</button>
+                <button onclick="downloadInvoice()">Download as PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Libraries for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        // Add new item input fields
+        function addItem() {
+            const itemsDiv = document.getElementById('items');
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item';
+            itemDiv.innerHTML = `
+                <label>Description:</label><input type="text" class="itemDesc" required>
+                <label>Quantity:</label><input type="number" class="itemQty" min="1" required>
+                <label>Price:</label><input type="number" class="itemPrice" min="0" step="0.01" required>
+                <button type="button" onclick="removeItem(this)">Remove</button><br><br>
+            `;
+            itemsDiv.appendChild(itemDiv);
+        }
+
+        // Remove an item input field
+        function removeItem(button) {
+            button.parentElement.remove();
+        }
+
+        // Handle form submission
+        document.getElementById('invoiceForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Get customer details
+            const customerName = document.getElementById('customerName').value;
+            const customerAddress = document.getElementById('customerAddress').value;
+            const invoiceDate = document.getElementById('invoiceDate').value;
+
+            // Get items
+            const items = document.querySelectorAll('.item');
+            let total = 0;
+            const itemRows = Array.from(items).map(item => {
+                const desc = item.querySelector('.itemDesc').value;
+                const qty = parseInt(item.querySelector('.itemQty').value);
+                const price = parseFloat(item.querySelector('.itemPrice').value);
+                const itemTotal = qty * price;
+                total += itemTotal;
+                return `<tr>
+                    <td>${desc}</td>
+                    <td>${qty}</td>
+                    <td>$${price.toFixed(2)}</td>
+                    <td>$${itemTotal.toFixed(2)}</td>
+                </tr>`;
+            }).join('');
+
+            // Fetch and populate the invoice template
+            try {
+                const response = await fetch('sample_invoice.html');
+                if (!response.ok) throw new Error('Failed to load sample_invoice.html');
+                let template = await response.text();
+
+                // Replace placeholders
+                template = template.replace('{{customerName}}', customerName)
+                                 .replace('{{customerAddress}}', customerAddress)
+                                 .replace('{{invoiceDate}}', invoiceDate)
+                                 .replace('{{items}}', itemRows)
+                                 .replace('{{total}}', `$${total.toFixed(2)}`);
+
+                // Display the invoice
+                const invoicePreview = document.getElementById('invoicePreview');
+                invoicePreview.innerHTML = template;
+                invoicePreview.style.display = 'block';
+                document.getElementById('invoiceActions').style.display = 'block';
+            } catch (error) {
+                console.error(error);
+                alert('Error loading invoice template. Please ensure sample_invoice.html exists.');
+            }
+        });
+
+        // Print invoice
+        function printInvoice() {
+            const invoice = document.getElementById('invoicePreview').innerHTML;
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write(`
+                <html>
+                <head><title>Invoice</title><style>${getInvoiceStyles()}</style></head>
+                <body>${invoice}</body>
+                </html>
+            `);
+            newWindow.document.close();
+            newWindow.print();
+        }
+
+        // Download invoice as PDF
+        function downloadInvoice() {
+            const { jsPDF } = window.jspdf;
+            const invoice = document.getElementById('invoicePreview');
+
+            html2canvas(invoice, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 190; // A4 width in mm (210mm - margins)
+                const pageHeight = 295; // A4 height in mm
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 10;
+
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight + 10;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                pdf.save('invoice.pdf');
+            });
+        }
+
+        // Get invoice styles for printing
+        function getInvoiceStyles() {
+            return `
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                .invoice { border: 1px solid #ccc; padding: 20px; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; }
+            `;
+        }
+    </script>
+</body>
+</html>

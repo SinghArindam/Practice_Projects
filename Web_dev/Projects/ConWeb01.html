@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Premium construction services with modern design and innovation." />
+  <title>BuildCraft | Apple-Inspired Construction</title>
+  <!-- Google Fonts (SF Pro Alternative) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- Styles -->
+  <style>
+    :root {
+      --primary: #ffffff;
+      --accent: #1a73e8;
+      --dark: #1d1d1f;
+      --light: #f5f5f7;
+      --transition: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--primary);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.8);
+      transition: all 0.3s var(--transition);
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      animation: pulse 3s infinite;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--dark);
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s var(--transition);
+      bottom: -5px;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: url('https://picsum.photos/1920/1080') center/cover no-repeat;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .hero-content {
+      z-index: 2;
+      text-align: center;
+      color: white;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .typewriter {
+      font-size: 3rem;
+      overflow: hidden;
+      border-right: .15em solid white;
+      white-space: nowrap;
+      margin: 0 auto;
+      letter-spacing: .1em;
+      animation: typing 3s steps(40, end), blink-caret .75s step-end infinite;
+    }
+
+    .cta-button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--accent);
+      border: none;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: transform 0.3s var(--transition), box-shadow 0.3s;
+    }
+
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(26, 115, 232, 0.4);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      0% {opacity: 0; transform: translateY(40px);}
+      100% {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: white }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav ul {
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .typewriter {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <header>
+    <div class="nav">
+      <div class="logo">BuildCraft</div>
+      <nav>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#portfolio">Portfolio</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="typewriter">Building the Future, Today</h1>
+      <button class="cta-button">Get a Quote</button>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" style="padding: 4rem 2rem; background: var(--light);">
+    <div class="container" style="max-width: 1200px; margin: 0 auto;">
+      <h2 style="text-align: center; margin-bottom: 2rem;">About Us</h2>
+      <p class="about-text" style="max-width: 800px; margin: 0 auto; opacity: 0; transform: translateY(20px); transition: all 1s var(--transition); text-align: center;">
+        With over 20 years of experience, BuildCraft delivers innovative construction solutions that blend precision, quality, and sustainability.
+      </p>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" style="padding: 4rem 2rem; background: white;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto;">
+      <h2 style="text-align: center; margin-bottom: 2rem;">Our Services</h2>
+      <div class="services-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+        <!-- Service Card -->
+        <div class="service-card" style="background: var(--light); border-radius: 10px; overflow: hidden; transition: transform 0.3s var(--transition);">
+          <div style="height: 150px; background: #e0e0e0; display: flex; align-items: center; justify-content: center;">
+            <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+          </div>
+          <div style="padding: 1.5rem;">
+            <h3>Residential</h3>
+            <p>Custom homes built with precision and care for modern living.</p>
+          </div>
+        </div>
+        <!-- Repeat for Commercial, Renovations -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" style="padding: 4rem 2rem; background: var(--light);">
+    <div class="container" style="max-width: 800px; margin: 0 auto;">
+      <h2 style="text-align: center; margin-bottom: 2rem;">Contact Us</h2>
+      <form id="contactForm" style="display: grid; gap: 1rem;">
+        <input type="text" placeholder="Name" required style="padding: 0.75rem; border: 1px solid #ccc; border-radius: 5px;">
+        <input type="email" placeholder="Email" required style="padding: 0.75rem; border: 1px solid #ccc; border-radius: 5px;">
+        <input type="tel" placeholder="Phone" required style="padding: 0.75rem; border: 1px solid #ccc; border-radius: 5px;">
+        <textarea placeholder="Message" required style="padding: 0.75rem; border: 1px solid #ccc; border-radius: 5px; resize: vertical;"></textarea>
+        <button type="submit" class="cta-button">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="padding: 2rem; background: var(--dark); color: white; text-align: center;">
+    <p>&copy; 2023 BuildCraft. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Scroll animations
+    const aboutText = document.querySelector('.about-text');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = 1;
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.5 });
+    observer.observe(aboutText);
+
+    // Form submission
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you for your message!');
+      this.reset();
+    });
+
+    // Dynamic service cards (demo)
+    const servicesGrid = document.querySelector('.services-grid');
+    const services = [
+      { title: 'Commercial', desc: 'Large-scale projects with cutting-edge engineering.' },
+      { title: 'Renovations', desc: 'Transform spaces with modern materials and techniques.' }
+    ];
+    services.forEach(service => {
+      const card = document.createElement('div');
+      card.className = 'service-card';
+      card.innerHTML = `
+        <div style="height: 150px; background: #e0e0e0; display: flex; align-items: center; justify-content: center;">
+          <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <line x1="8" y1="21" x2="16" y2="21" />
+            <line x1="12" y1="17" x2="12" y2="21" />
+          </svg>
+        </div>
+        <div style="padding: 1.5rem;">
+          <h3>${service.title}</h3>
+          <p>${service.desc}</p>
+        </div>
+      `;
+      servicesGrid.appendChild(card);
+    });
+  </script>
+</body>
+</html>

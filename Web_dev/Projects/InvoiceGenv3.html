@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Invoice Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: auto;
+        }
+        h1, h2 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        textarea,
+        select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .row > div {
+            flex: 1;
+        }
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 5px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .item-row input[type="text"],
+        .item-row input[type="number"] {
+            margin-bottom: 0;
+            flex: 1;
+        }
+        .item-row .description {
+            flex: 3;
+        }
+        .item-row .total-amount {
+            flex: 1;
+            text-align: right;
+            font-weight: bold;
+        }
+        .add-item-btn, .remove-item-btn, .action-btn, .print-btn, .clear-btn, .download-pdf-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .remove-item-btn {
+            background-color: #dc3545;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        .action-btn {
+            background-color: #007bff;
+        }
+        .print-btn {
+            background-color: #6c757d;
+        }
+        .download-pdf-btn {
+            background-color: #dc3545; /* Changed to red for PDF */
+        }
+        .clear-btn {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .add-item-btn:hover, .remove-item-btn:hover, .action-btn:hover, .print-btn:hover, .clear-btn:hover, .download-pdf-btn:hover {
+            opacity: 0.9;
+        }
+        .totals {
+            text-align: right;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .totals div {
+            margin-bottom: 8px;
+        }
+        .totals .grand-total {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #0056b3;
+        }
+        #invoiceList {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        #invoiceList ul {
+            list-style: none;
+            padding: 0;
+        }
+        #invoiceList li {
+            background-color: #e9ecef;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #invoiceList li span {
+            font-weight: bold;
+            color: #0056b3;
+        }
+        #invoiceList li button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #invoiceList li button:hover {
+            opacity: 0.9;
+        }
+        #clientModal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px;
+            border-radius: 8px;
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal-content button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        .modal-content button:hover {
+            opacity: 0.9;
+        }
+        .client-selection-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .client-selection-group select {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #invoiceForm, #invoiceForm * {
+                visibility: visible;
+            }
+            #invoiceForm {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+                padding: 0;
+            }
+            .section, .row, .item-row {
+                page-break-inside: avoid;
+            }
+            .add-item-btn, .remove-item-btn, .action-btn, .print-btn, .clear-btn, #invoiceList, #clientModal, .download-pdf-btn {
+                display: none;
+            }
+            input, textarea, select {
+                border: none !important;
+                padding: 0 !important;
+            }
+            .totals div {
+                border-top: none;
+                padding-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Construction Invoice Manager</h1>
+
+        <div class="section">
+            <h2>Client Management</h2>
+            <div class="client-selection-group">
+                <label for="clientSelect">Select Client:</label>
+                <select id="clientSelect">
+                    <option value="">-- Select or Add New Client --</option>
+                </select>
+                <button type="button" class="add-item-btn" onclick="openClientModal()">Add New Client</button>
+            </div>
+            <div class="form-group">
+                <label for="billingTo">Billing To:</label>
+                <textarea id="billingTo" rows="4" placeholder="Client Name, Address Line 1, City, Postcode" readonly></textarea>
+            </div>
+            <div class="form-group">
+                <label for="siteAddress">Site Address:</label>
+                <textarea id="siteAddress" rows="4" placeholder="Site Name, Address Line 1, City, Postcode" readonly></textarea>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Invoice Details</h2>
+            <form id="invoiceForm">
+                <div class="row">
+                    <div>
+                        <label for="invoiceNumber">Invoice Number:</label>
+                        <input type="text" id="invoiceNumber" required>
+                    </div>
+                    <div>
+                        <label for="invoiceDate">Invoice Date:</label>
+                        <input type="date" id="invoiceDate" required>
+                    </div>
+                    <div>
+                        <label for="dueDate">Due Date:</label>
+                        <input type="date" id="dueDate">
+                    </div>
+                </div>
+
+                <h3>Line Items</h3>
+                <div id="lineItemsContainer">
+                    <div class="item-row">
+                        <input type="text" class="description" placeholder="Description of work/materials" oninput="calculateItemTotal(this.parentNode)">
+                        <input type="number" class="quantity" value="1" min="1" oninput="calculateItemTotal(this.parentNode)">
+                        <input type="number" class="unit-price" value="0.00" min="0" step="0.01" oninput="calculateItemTotal(this.parentNode)">
+                        <span class="total-amount">0.00</span>
+                        <button type="button" class="remove-item-btn" onclick="removeItem(this.parentNode)">Remove</button>
+                    </div>
+                </div>
+                <button type="button" class="add-item-btn" onclick="addLineItem()">Add Line Item</button>
+
+                <div class="totals">
+                    <div>Subtotal: $<span id="subtotal">0.00</span></div>
+                    <div>
+                        Tax Rate (%): <input type="number" id="taxRate" value="10" min="0" step="0.1" oninput="calculateGrandTotal()">
+                        Tax Amount: $<span id="taxAmount">0.00</span>
+                    </div>
+                    <div class="grand-total">Grand Total: $<span id="grandTotal">0.00</span></div>
+                </div>
+
+                <div style="margin-top: 30px; text-align: center;">
+                    <button type="button" class="action-btn" onclick="saveInvoice()">Save Invoice</button>
+                    <button type="button" class="print-btn" onclick="window.print()">Print Invoice</button> <button type="button" class="download-pdf-btn" onclick="downloadPdf()">Download as PDF</button>
+                    <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="section" id="invoiceList">
+            <h2>Saved Invoices</h2>
+            <ul id="invoicesSavedList">
+                </ul>
+        </div>
+    </div>
+
+    <div id="clientModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeClientModal()">&times;</span>
+            <h2>Add New Client</h2>
+            <div class="form-group">
+                <label for="newClientName">Client Name:</label>
+                <input type="text" id="newClientName" required>
+            </div>
+            <div class="form-group">
+                <label for="newClientBillingAddress">Billing Address:</label>
+                <textarea id="newClientBillingAddress" rows="4" placeholder="Client Name, Address Line 1, City, Postcode" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="newClientSiteAddress">Site Address:</label>
+                <textarea id="newClientSiteAddress" rows="4" placeholder="Site Name, Address Line 1, City, Postcode"></textarea>
+            </div>
+            <button type="button" onclick="addNewClient()">Save Client</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        const CLIENTS_STORAGE_KEY = 'construction_invoice_clients';
+        const INVOICES_STORAGE_KEY = 'construction_invoice_invoices';
+
+        // --- Client Management ---
+        function getClients() {
+            const clientsJson = localStorage.getItem(CLIENTS_STORAGE_KEY);
+            return clientsJson ? JSON.parse(clientsJson) : [];
+        }
+
+        function saveClients(clients) {
+            localStorage.setItem(CLIENTS_STORAGE_KEY, JSON.stringify(clients));
+        }
+
+        function populateClientSelect() {
+            const clientSelect = document.getElementById('clientSelect');
+            clientSelect.innerHTML = '<option value="">-- Select or Add New Client --</option>';
+            const clients = getClients();
+            clients.forEach((client, index) => {
+                const option = document.createElement('option');
+                option.value = index; // Use index as value to easily retrieve client object
+                option.textContent = client.name;
+                clientSelect.appendChild(option);
+            });
+        }
+
+        function openClientModal() {
+            document.getElementById('clientModal').style.display = 'block';
+            document.getElementById('newClientName').value = '';
+            document.getElementById('newClientBillingAddress').value = '';
+            document.getElementById('newClientSiteAddress').value = '';
+        }
+
+        function closeClientModal() {
+            document.getElementById('clientModal').style.display = 'none';
+        }
+
+        function addNewClient() {
+            const name = document.getElementById('newClientName').value.trim();
+            const billingAddress = document.getElementById('newClientBillingAddress').value.trim();
+            const siteAddress = document.getElementById('newClientSiteAddress').value.trim();
+
+            if (!name || !billingAddress) {
+                alert('Client Name and Billing Address are required.');
+                return;
+            }
+
+            const clients = getClients();
+            clients.push({ name, billingAddress, siteAddress });
+            saveClients(clients);
+            populateClientSelect();
+            closeClientModal();
+            // Select the newly added client
+            document.getElementById('clientSelect').value = clients.length - 1;
+            loadClientDetails();
+        }
+
+        function loadClientDetails() {
+            const clientSelect = document.getElementById('clientSelect');
+            const selectedIndex = clientSelect.value;
+            const billingTo = document.getElementById('billingTo');
+            const siteAddress = document.getElementById('siteAddress');
+
+            if (selectedIndex !== "") {
+                const clients = getClients();
+                const selectedClient = clients[selectedIndex];
+                billingTo.value = selectedClient.billingAddress;
+                siteAddress.value = selectedClient.siteAddress;
+            } else {
+                billingTo.value = '';
+                siteAddress.value = '';
+            }
+        }
+
+        // --- Invoice Creation ---
+        function addLineItem(description = '', quantity = 1, unitPrice = 0) {
+            const container = document.getElementById('lineItemsContainer');
+            const itemRow = document.createElement('div');
+            itemRow.classList.add('item-row');
+            itemRow.innerHTML = `
+                <input type="text" class="description" placeholder="Description of work/materials" value="${description}" oninput="calculateItemTotal(this.parentNode)">
+                <input type="number" class="quantity" value="${quantity}" min="1" oninput="calculateItemTotal(this.parentNode)">
+                <input type="number" class="unit-price" value="${unitPrice.toFixed(2)}" min="0" step="0.01" oninput="calculateItemTotal(this.parentNode)">
+                <span class="total-amount">${(quantity * unitPrice).toFixed(2)}</span>
+                <button type="button" class="remove-item-btn" onclick="removeItem(this.parentNode)">Remove</button>
+            `;
+            container.appendChild(itemRow);
+            calculateGrandTotal(); // Recalculate totals after adding an item
+        }
+
+        function removeItem(itemRow) {
+            itemRow.remove();
+            calculateGrandTotal(); // Recalculate totals after removing an item
+        }
+
+        function calculateItemTotal(itemRow) {
+            const quantity = parseFloat(itemRow.querySelector('.quantity').value) || 0;
+            const unitPrice = parseFloat(itemRow.querySelector('.unit-price').value) || 0;
+            const totalAmountSpan = itemRow.querySelector('.total-amount');
+            totalAmountSpan.textContent = (quantity * unitPrice).toFixed(2);
+            calculateGrandTotal();
+        }
+
+        function calculateGrandTotal() {
+            let subtotal = 0;
+            document.querySelectorAll('.item-row').forEach(row => {
+                subtotal += parseFloat(row.querySelector('.total-amount').textContent) || 0;
+            });
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+
+            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+            const taxAmount = subtotal * (taxRate / 100);
+            document.getElementById('taxAmount').textContent = taxAmount.toFixed(2);
+
+            const grandTotal = subtotal + taxAmount;
+            document.getElementById('grandTotal').textContent = grandTotal.toFixed(2);
+        }
+
+        // --- Invoice Storage and Retrieval ---
+        function getInvoices() {
+            const invoicesJson = localStorage.getItem(INVOICES_STORAGE_KEY);
+            return invoicesJson ? JSON.parse(invoicesJson) : [];
+        }
+
+        function saveInvoices(invoices) {
+            localStorage.setItem(INVOICES_STORAGE_KEY, JSON.stringify(invoices));
+        }
+
+        function saveInvoice() {
+            const invoiceNumber = document.getElementById('invoiceNumber').value.trim();
+            const invoiceDate = document.getElementById('invoiceDate').value;
+            const dueDate = document.getElementById('dueDate').value;
+            const clientSelect = document.getElementById('clientSelect');
+            const selectedClientIndex = clientSelect.value;
+            const selectedClientName = selectedClientIndex !== "" ? clientSelect.options[clientSelect.selectedIndex].text : '';
+
+            if (!invoiceNumber || !invoiceDate || selectedClientIndex === "") {
+                alert('Invoice Number, Invoice Date, and Client are required.');
+                return;
+            }
+
+            const lineItems = [];
+            document.querySelectorAll('.item-row').forEach(row => {
+                lineItems.push({
+                    description: row.querySelector('.description').value.trim(),
+                    quantity: parseFloat(row.querySelector('.quantity').value) || 0,
+                    unitPrice: parseFloat(row.querySelector('.unit-price').value) || 0,
+                    total: parseFloat(row.querySelector('.total-amount').textContent) || 0
+                });
+            });
+
+            const invoice = {
+                invoiceNumber: invoiceNumber,
+                invoiceDate: invoiceDate,
+                dueDate: dueDate,
+                client: {
+                    index: selectedClientIndex,
+                    name: selectedClientName,
+                    billingAddress: document.getElementById('billingTo').value,
+                    siteAddress: document.getElementById('siteAddress').value
+                },
+                lineItems: lineItems,
+                subtotal: parseFloat(document.getElementById('subtotal').textContent),
+                taxRate: parseFloat(document.getElementById('taxRate').value),
+                taxAmount: parseFloat(document.getElementById('taxAmount').textContent),
+                grandTotal: parseFloat(document.getElementById('grandTotal').textContent),
+                savedAt: new Date().toISOString()
+            };
+
+            const invoices = getInvoices();
+            // Check if an invoice with this number already exists and update it
+            const existingIndex = invoices.findIndex(inv => inv.invoiceNumber === invoice.invoiceNumber);
+            if (existingIndex > -1) {
+                invoices[existingIndex] = invoice;
+                alert('Invoice updated successfully!');
+            } else {
+                invoices.push(invoice);
+                alert('Invoice saved successfully!');
+            }
+            saveInvoices(invoices);
+            populateInvoicesList();
+            clearForm(); // Clear the form after saving
+        }
+
+        function populateInvoicesList() {
+            const invoicesList = document.getElementById('invoicesSavedList');
+            invoicesList.innerHTML = '';
+            const invoices = getInvoices();
+            invoices.forEach(invoice => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>Invoice #${invoice.invoiceNumber} (Client: ${invoice.client.name}) - ${invoice.invoiceDate}</span>
+                    <div>
+                        <button onclick="loadInvoice('${invoice.invoiceNumber}')">View</button>
+                        <button onclick="deleteInvoice('${invoice.invoiceNumber}')">Delete</button>
+                    </div>
+                `;
+                invoicesList.appendChild(li);
+            });
+        }
+
+        function loadInvoice(invoiceNumber) {
+            const invoices = getInvoices();
+            const invoice = invoices.find(inv => inv.invoiceNumber === invoiceNumber);
+
+            if (invoice) {
+                document.getElementById('invoiceNumber').value = invoice.invoiceNumber;
+                document.getElementById('invoiceDate').value = invoice.invoiceDate;
+                document.getElementById('dueDate').value = invoice.dueDate;
+
+                // Select the client
+                document.getElementById('clientSelect').value = invoice.client.index;
+                loadClientDetails(); // Re-populate billing and site addresses
+
+                // Clear existing line items
+                const lineItemsContainer = document.getElementById('lineItemsContainer');
+                lineItemsContainer.innerHTML = '';
+
+                // Add line items from saved invoice
+                invoice.lineItems.forEach(item => {
+                    addLineItem(item.description, item.quantity, item.unitPrice);
+                });
+
+                document.getElementById('taxRate').value = invoice.taxRate;
+                calculateGrandTotal(); // Ensure totals are recalculated accurately
+            } else {
+                alert('Invoice not found.');
+            }
+        }
+
+        function deleteInvoice(invoiceNumber) {
+            if (confirm(`Are you sure you want to delete Invoice #${invoiceNumber}?`)) {
+                let invoices = getInvoices();
+                invoices = invoices.filter(inv => inv.invoiceNumber !== invoiceNumber);
+                saveInvoices(invoices);
+                populateInvoicesList();
+                clearForm(); // Clear the form if the current invoice was deleted
+                alert('Invoice deleted successfully!');
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('invoiceForm').reset();
+            document.getElementById('billingTo').value = '';
+            document.getElementById('siteAddress').value = '';
+            document.getElementById('clientSelect').value = ''; // Reset client selection
+
+            // Clear and re-add one default line item
+            const lineItemsContainer = document.getElementById('lineItemsContainer');
+            lineItemsContainer.innerHTML = '';
+            addLineItem('', 1, 0); // Add a fresh, empty line item
+
+            calculateGrandTotal(); // Reset totals
+        }
+
+        // --- PDF Download Functionality ---
+        async function downloadPdf() {
+            const invoiceForm = document.getElementById('invoiceForm');
+            const invoiceNumber = document.getElementById('invoiceNumber').value.trim();
+
+            if (!invoiceNumber) {
+                alert('Please enter an invoice number before downloading the PDF.');
+                return;
+            }
+
+            // Temporarily hide buttons and inputs for a cleaner PDF
+            const elementsToHide = document.querySelectorAll('.action-btn, .print-btn, .clear-btn, .download-pdf-btn, .remove-item-btn, .add-item-btn, input, select, textarea');
+            elementsToHide.forEach(el => {
+                if (el.tagName !== 'SPAN') { // Don't hide the total amounts
+                    el.style.display = 'none';
+                }
+            });
+
+            // Set span values for printing to appear as plain text
+            document.querySelectorAll('.item-row span, .totals span').forEach(span => {
+                span.style.display = 'inline-block'; // Ensure spans are visible
+                span.style.width = 'auto'; // Prevent overflow
+            });
+
+
+            // Create a temporary div to render the invoice for PDF, ensuring it's off-screen
+            const tempDiv = document.createElement('div');
+            tempDiv.style.position = 'absolute';
+            tempDiv.style.left = '-9999px';
+            tempDiv.style.top = '-9999px';
+            tempDiv.style.width = invoiceForm.offsetWidth + 'px'; // Maintain original width
+            tempDiv.style.padding = '30px'; // Add padding similar to container
+            tempDiv.style.backgroundColor = '#fff';
+            tempDiv.style.fontFamily = 'Arial, sans-serif'; // Ensure font is consistent
+
+            // Clone the entire container for rendering, so original page is not affected
+            const containerClone = invoiceForm.cloneNode(true);
+
+            // Re-show elements within the clone for PDF generation
+            containerClone.querySelectorAll('.action-btn, .print-btn, .clear-btn, .download-pdf-btn, .remove-item-btn, .add-item-btn').forEach(el => {
+                el.style.display = 'none'; // Keep these hidden even in PDF
+            });
+             containerClone.querySelectorAll('input, select, textarea').forEach(el => {
+                // For PDF, we want to show their values as text, not input fields
+                const textNode = document.createTextNode(el.value || '');
+                el.parentNode.replaceChild(textNode, el);
+             });
+            // Ensure totals show correctly
+            containerClone.querySelector('#subtotal').textContent = document.getElementById('subtotal').textContent;
+            containerClone.querySelector('#taxAmount').textContent = document.getElementById('taxAmount').textContent;
+            containerClone.querySelector('#grandTotal').textContent = document.getElementById('grandTotal').textContent;
+            containerClone.querySelector('#billingTo').textContent = document.getElementById('billingTo').value;
+            containerClone.querySelector('#siteAddress').textContent = document.getElementById('siteAddress').value;
+            containerClone.querySelector('#invoiceNumber').textContent = document.getElementById('invoiceNumber').value;
+            containerClone.querySelector('#invoiceDate').textContent = document.getElementById('invoiceDate').value;
+            containerClone.querySelector('#dueDate').textContent = document.getElementById('dueDate').value;
+            containerClone.querySelector('#taxRate').textContent = document.getElementById('taxRate').value + '%';
+
+
+            tempDiv.appendChild(containerClone);
+            document.body.appendChild(tempDiv);
+
+
+            const { jsPDF } = window.jspdf;
+
+            // Use html2canvas to render the form as an image
+            const canvas = await html2canvas(tempDiv, {
+                scale: 2, // Increase scale for better resolution
+                useCORS: true, // If you have external images
+            });
+
+            // Revert changes to the original form
+            elementsToHide.forEach(el => el.style.display = ''); // Restore display property
+            document.querySelectorAll('.item-row span, .totals span').forEach(span => {
+                span.style.display = '';
+                span.style.width = '';
+            });
+
+            // Remove the temporary div
+            document.body.removeChild(tempDiv);
+
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4'); // 'p' for portrait, 'mm' for millimeters, 'a4' size
+            const imgWidth = 210; // A4 width in mm
+            const pageHeight = 297; // A4 height in mm
+            const imgHeight = canvas.height * imgWidth / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            pdf.save(`Invoice_${invoiceNumber}.pdf`);
+        }
+
+
+        // --- Initialize on Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateClientSelect();
+            populateInvoicesList();
+            addLineItem(); // Add one default line item when the page loads
+            document.getElementById('clientSelect').addEventListener('change', loadClientDetails);
+            calculateGrandTotal(); // Initial calculation
+        });
+    </script>
+</body>
+</html>

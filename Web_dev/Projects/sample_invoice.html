@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        .invoice {
+            font-family: Arial, sans-serif;
+            border: 1px solid #ccc;
+            padding: 20px;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .customer-details p {
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tfoot td {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice">
+        <h2>Invoice</h2>
+        <div class="customer-details">
+            <p><strong>Customer:</strong> {{customerName}}</p>
+            <p><strong>Address:</strong> {{customerAddress}}</p>
+            <p><strong>Date:</strong> {{invoiceDate}}</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{items}}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">Total</td>
+                    <td>{{total}}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</body>
+</html>
