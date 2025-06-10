@@ -106,8 +106,8 @@
   :root {
     --color-background: rgba(31, 33, 33, 1);
     --color-surface: rgba(38, 40, 40, 1);
-    --color-text: rgba(245, 245, 245, 1);
-    --color-text-secondary: rgba(167, 169, 169, 0.7);
+    --color-text: rgba(0, 0, 0, 0.9);
+    --color-text-secondary: rgba(0, 0, 0, 0.7);
     --color-primary: rgba(50, 184, 198, 1);
     --color-primary-hover: rgba(45, 166, 178, 1);
     --color-primary-active: rgba(41, 150, 161, 1);
@@ -125,8 +125,8 @@
     --color-card-border-inner: rgba(119, 124, 124, 0.15);
     --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
       inset 0 -1px 0 rgba(0, 0, 0, 0.15);
-    --button-border-secondary: rgba(119, 124, 124, 0.2);
-    --color-border-secondary: rgba(119, 124, 124, 0.2);
+    --button-border-secondary: rgba(0, 0, 0, 0.9);
+    --color-border-secondary: rgba(12, 12, 12, 0.2);
     --color-select-caret: rgba(245, 245, 245, 0.8);
 
     /* Common style patterns - updated for dark mode */
@@ -1047,7 +1047,7 @@ p {
     margin-bottom: 3rem;
     opacity: 0;
     animation: fadeInUp 1s ease 1.2s forwards;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(142, 116, 116, 0.9);
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
@@ -1068,14 +1068,14 @@ p {
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(220, 187, 0, 0.93);
     animation: bounce 2s infinite;
 }
 
 .mouse {
     width: 24px;
     height: 40px;
-    border: 2px solid rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(220, 187, 0, 0.93);
     border-radius: 12px;
     position: relative;
     margin: 0 auto 10px;
@@ -1084,7 +1084,7 @@ p {
 .wheel {
     width: 4px;
     height: 8px;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(220, 187, 0, 0.93);
     border-radius: 2px;
     position: absolute;
     top: 8px;
@@ -1123,7 +1123,7 @@ p {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(195, 195, 195, 0.2), transparent);
     transition: left 0.5s ease;
 }
 
@@ -1143,8 +1143,8 @@ p {
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: rgb(160, 255, 242);
+    color: rgb(0, 204, 255);
     border: 2px solid rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
 }
@@ -1386,7 +1386,7 @@ p {
 .service-card {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: var(--border-radius-lg);
     padding: 2.5rem;
     text-align: center;
@@ -1403,7 +1403,7 @@ p {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 255, 255, 0.05));
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 255, 255, 0.5));
     opacity: 0;
     transition: opacity var(--transition-normal);
 }
