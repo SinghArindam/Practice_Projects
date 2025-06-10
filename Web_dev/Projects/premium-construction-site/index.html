@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyLine Construction Group | Building Tomorrow's Legacy Today</title>
+    <meta name="description" content="Premier construction company specializing in commercial, residential, and infrastructure projects with over 15 years of industry excellence.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Page Loader -->
+    <div class="loader">
+        <div class="loader-container">
+            <svg class="loader-icon" viewBox="0 0 100 100">
+                <path d="M20,50 L80,50" stroke="#ff6b35" stroke-width="4" stroke-linecap="round"></path>
+                <path d="M50,20 L50,80" stroke="#ff6b35" stroke-width="4" stroke-linecap="round"></path>
+                <circle cx="50" cy="50" r="30" stroke="#1a365d" stroke-width="4" fill="none"></circle>
+            </svg>
+            <div class="loader-progress">
+                <div class="loader-progress-bar"></div>
+            </div>
+            <div class="loader-counter">0%</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="header-inner">
+                <div class="logo">
+                    <a href="#home" class="nav-link">
+                        <span class="logo-text">Sky<span class="text-accent">Line</span></span>
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li><a href="#home" class="nav-link active">Home</a></li>
+                        <li><a href="#about" class="nav-link">About</a></li>
+                        <li><a href="#services" class="nav-link">Services</a></li>
+                        <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+                        <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+                        <li><a href="#contact" class="nav-link">Contact</a></li>
+                    </ul>
+                </nav>
+                <button class="menu-toggle" aria-label="Toggle menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero-section">
+            <div class="hero-bg">
+                <div class="bg-overlay"></div>
+                <div class="particle-container"></div>
+            </div>
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title animated-text">
+                        <span class="word">Building</span>
+                        <span class="word">Tomorrow's</span>
+                        <span class="word">Legacy</span>
+                        <span class="word">Today</span>
+                    </h1>
+                    <p class="hero-subtitle reveal-text">Premier construction company specializing in commercial, residential, and infrastructure projects with over 15 years of industry excellence.</p>
+                    <div class="hero-cta">
+                        <a href="#services" class="btn btn-primary">Our Services</a>
+                        <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <div class="mouse">
+                    <div class="wheel"></div>
+                </div>
+                <div class="scroll-text">Scroll Down</div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section about-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="text-accent">About</span> Us</h2>
+                    <p class="section-subtitle">Building excellence since 2008</p>
+                </div>
+                <div class="about-content">
+                    <div class="about-text scroll-animate">
+                        <h3 class="title-accent">Our Story</h3>
+                        <p>Founded in 2008, SkyLine Construction Group has evolved from a small local contractor to one of the region's most respected construction firms. With a commitment to quality, innovation, and client satisfaction, we've successfully completed over 250 projects across various sectors.</p>
+                        <p>Our team of 120+ professionals brings together decades of experience and a passion for construction excellence. We believe in building not just structures, but lasting relationships and communities.</p>
+                        <div class="stats-container">
+                            <div class="stat-item scroll-animate">
+                                <div class="stat-number" data-count="16">0</div>
+                                <div class="stat-label">Years of Experience</div>
+                            </div>
+                            <div class="stat-item scroll-animate">
+                                <div class="stat-number" data-count="250">0</div>
+                                <div class="stat-label">Projects Completed</div>
+                            </div>
+                            <div class="stat-item scroll-animate">
+                                <div class="stat-number" data-count="120">0</div>
+                                <div class="stat-label">Team Members</div>
+                            </div>
+                            <div class="stat-item scroll-animate">
+                                <div class="stat-number" data-count="98">0</div>
+                                <div class="stat-label">Client Satisfaction</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="about-image parallax-container">
+                        <div class="image-mask">
+                            <div class="about-img-inner parallax-element"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-section">
+                    <h3 class="title-accent">Our Leadership Team</h3>
+                    <div class="team-grid">
+                        <div class="team-member scroll-animate">
+                            <div class="member-avatar">
+                                <div class="avatar-inner">
+                                    <div class="avatar-bg"></div>
+                                    <div class="member-initials">MT</div>
+                                </div>
+                            </div>
+                            <div class="member-info">
+                                <h4 class="member-name">Michael Thompson</h4>
+                                <div class="member-position">Chief Executive Officer</div>
+                                <p class="member-bio">Visionary leader with extensive experience in large-scale construction projects and business development.</p>
+                                <div class="member-experience">25+ years</div>
+                            </div>
+                        </div>
+                        <div class="team-member scroll-animate">
+                            <div class="member-avatar">
+                                <div class="avatar-inner">
+                                    <div class="avatar-bg"></div>
+                                    <div class="member-initials">SC</div>
+                                </div>
+                            </div>
+                            <div class="member-info">
+                                <h4 class="member-name">Sarah Chen</h4>
+                                <div class="member-position">Chief Operating Officer</div>
+                                <p class="member-bio">Operations expert specializing in project management and quality assurance across all construction phases.</p>
+                                <div class="member-experience">20+ years</div>
+                            </div>
+                        </div>
+                        <div class="team-member scroll-animate">
+                            <div class="member-avatar">
+                                <div class="avatar-inner">
+                                    <div class="avatar-bg"></div>
+                                    <div class="member-initials">DR</div>
+                                </div>
+                            </div>
+                            <div class="member-info">
+                                <h4 class="member-name">David Rodriguez</h4>
+                                <div class="member-position">Chief Engineer</div>
+                                <p class="member-bio">Structural engineering specialist with expertise in complex commercial and infrastructure projects.</p>
+                                <div class="member-experience">18+ years</div>
+                            </div>
+                        </div>
+                        <div class="team-member scroll-animate">
+                            <div class="member-avatar">
+                                <div class="avatar-inner">
+                                    <div class="avatar-bg"></div>
+                                    <div class="member-initials">EW</div>
+                                </div>
+                            </div>
+                            <div class="member-info">
+                                <h4 class="member-name">Emma Williams</h4>
+                                <div class="member-position">Safety Director</div>
+                                <p class="member-bio">Safety professional ensuring all projects meet the highest safety standards and regulatory compliance.</p>
+                                <div class="member-experience">15+ years</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="section services-section">
+            <div class="section-bg parallax-bg"></div>
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Our <span class="text-accent">Services</span></h2>
+                    <p class="section-subtitle">Comprehensive construction solutions for every need</p>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card scroll-animate">
+                        <div class="service-icon">
+                            <svg class="animated-svg" viewBox="0 0 24 24" width="48" height="48">
+                                <path d="M3,21h18v-2H3V21z M5,7H2v12h3V7z M7,7v12h3V7H7z M22,7h-3v12h3V7z M19,7h-3v12h3V7z" fill="#1a365d"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">General Contracting</h3>
+                        <p class="service-description">Comprehensive project management from conception to completion, ensuring quality, timeline, and budget adherence.</p>
+                        <div class="service-hover-content">
+                            <a href="#contact" class="btn btn-outline">Enquire Now</a>
+                        </div>
+                    </div>
+                    <div class="service-card scroll-animate">
+                        <div class="service-icon">
+                            <svg class="animated-svg" viewBox="0 0 24 24" width="48" height="48">
+                                <path d="M7,5h10v2h2V3h-6V1h-2v2H5v4h2V5z M22,21V7H2v14H22z M20,9v10H4V9H20z" fill="#1a365d"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Design-Build</h3>
+                        <p class="service-description">Integrated approach combining architectural design and construction under one roof for streamlined project delivery.</p>
+                        <div class="service-hover-content">
+                            <a href="#contact" class="btn btn-outline">Enquire Now</a>
+                        </div>
+                    </div>
+                    <div class="service-card scroll-animate">
+                        <div class="service-icon">
+                            <svg class="animated-svg" viewBox="0 0 24 24" width="48" height="48">
+                                <path d="M12,7V3H2v18h20V7H12z M6,19H4v-2h2V19z M6,15H4v-2h2V15z M6,11H4V9h2V11z M6,7H4V5h2V7z M10,19H8v-2h2V19z M10,15H8v-2h2V15z M10,11H8V9h2V11z M10,7H8V5h2V7z M20,19h-8v-2h2v-2h-2v-2h2v-2h-2V9h8V19z M18,11h-2v2h2V11z M18,15h-2v2h2V15z" fill="#1a365d"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Commercial Construction</h3>
+                        <p class="service-description">Office buildings, retail spaces, warehouses, and commercial complexes built to the highest standards.</p>
+                        <div class="service-hover-content">
+                            <a href="#contact" class="btn btn-outline">Enquire Now</a>
+                        </div>
+                    </div>
+                    <div class="service-card scroll-animate">
+                        <div class="service-icon">
+                            <svg class="animated-svg" viewBox="0 0 24 24" width="48" height="48">
+                                <path d="M19,9.3V4h-3v2.6L12,3L2,12h3v8h5v-6h4v6h5v-8h3L19,9.3z M10,10c0-1.1,0.9-2,2-2s2,0.9,2,2H10z" fill="#1a365d"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Residential Construction</h3>
+                        <p class="service-description">Custom homes, residential complexes, and housing developments crafted with attention to detail.</p>
+                        <div class="service-hover-content">
+                            <a href="#contact" class="btn btn-outline">Enquire Now</a>
+                        </div>
+                    </div>
+                    <div class="service-card scroll-animate">
+                        <div class="service-icon">
+                            <svg class="animated-svg" viewBox="0 0 24 24" width="48" height="48">
+                                <path d="M24,8c0-3.31-2.69-6-6-6C14.97,2,12,4.17,12,7c0,2.62,1.88,4.78,4.35,5.24C16.7,13.8,13,17.8,13,22h2c0-3.39,2.33-6.23,5.5-7v9h2v-9C20.4,15.91,23,18.43,23,22h2C25,17.55,20.78,13.5,17.03,13.01C20.08,12.54,24,10.42,24,8z M18,8c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S19.1,8,18,8z M7.69,10.79l4.77-4.77l-1.41-1.41L7,8.66L3.96,5.61L2.55,7.02l5.14,5.14C7.69,12.16,7.7,10.79,7.69,10.79z M6,18h2v-4h2v4h2v-7H6V18z" fill="#1a365d"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Infrastructure Development</h3>
+                        <p class="service-description">Roads, bridges, utilities, and public works projects that form the backbone of communities.</p>
+                        <div class="service-hover-content">
+                            <a href="#contact" class="btn btn-outline">Enquire Now</a>
+                        </div>
+                    </div>
+                    <div class="service-card scroll-animate">
+                        <div class="service-icon">
+                            <svg class="animated-svg" viewBox="0 0 24 24" width="48" height="48">
+                                <path d="M13.7,13.66l0.83,2.94c0.35,1.23,0.35,2.51,0,3.74L13.7,13.66z M20,4v4h-1v6h1v4h-7v-0.24l2.31,8.18c-0.65,0.17-1.3,0.06-1.86-0.29c-0.73-0.46-1.23-1.2-1.38-2.04l-0.58-2.06l-0.08-0.29L9,19.59l-0.08,0.29l-0.56,2.06c-0.15,0.84-0.64,1.58-1.38,2.04c-0.56,0.35-1.21,0.46-1.86,0.29L7.45,16.1L7.88,16H4V4H20z M18,14V8H6v12h6.53c0.08-0.3,0.23-0.59,0.4-0.84l1.53-2.23l1.53,2.23c0.18,0.25,0.32,0.54,0.4,0.84H18v-6H18z M13,9h1v4h-3V9H13z M10,9h1v4H8V9H10z" fill="#1a365d"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Renovation & Remodeling</h3>
+                        <p class="service-description">Transforming existing spaces with modern upgrades while preserving structural integrity.</p>
+                        <div class="service-hover-content">
+                            <a href="#contact" class="btn btn-outline">Enquire Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Section -->
+        <section id="portfolio" class="section portfolio-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Our <span class="text-accent">Portfolio</span></h2>
+                    <p class="section-subtitle">Showcasing our finest construction projects</p>
+                </div>
+                <div class="portfolio-filter">
+                    <button class="filter-btn active" data-filter="all">All Projects</button>
+                    <button class="filter-btn" data-filter="Commercial">Commercial</button>
+                    <button class="filter-btn" data-filter="Residential">Residential</button>
+                    <button class="filter-btn" data-filter="Infrastructure">Infrastructure</button>
+                    <button class="filter-btn" data-filter="Healthcare">Healthcare</button>
+                    <button class="filter-btn" data-filter="Educational">Educational</button>
+                </div>
+                <div class="portfolio-grid">
+                    <div class="portfolio-item scroll-animate" data-category="Commercial">
+                        <div class="portfolio-card">
+                            <div class="portfolio-image">
+                                <div class="image-overlay"></div>
+                                <div class="image-bg bg-office"></div>
+                            </div>
+                            <div class="portfolio-content">
+                                <h3 class="portfolio-title">Metropolitan Office Tower</h3>
+                                <div class="portfolio-category">Commercial</div>
+                                <div class="portfolio-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Year:</span>
+                                        <span class="detail-value">2023</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Value:</span>
+                                        <span class="detail-value">$85M</span>
+                                    </div>
+                                </div>
+                                <p class="portfolio-description">42-story office complex in downtown featuring sustainable design and modern amenities.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-item scroll-animate" data-category="Residential">
+                        <div class="portfolio-card">
+                            <div class="portfolio-image">
+                                <div class="image-overlay"></div>
+                                <div class="image-bg bg-residential"></div>
+                            </div>
+                            <div class="portfolio-content">
+                                <h3 class="portfolio-title">Riverside Residential Complex</h3>
+                                <div class="portfolio-category">Residential</div>
+                                <div class="portfolio-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Year:</span>
+                                        <span class="detail-value">2023</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Value:</span>
+                                        <span class="detail-value">$45M</span>
+                                    </div>
+                                </div>
+                                <p class="portfolio-description">300-unit luxury apartment complex with recreational facilities and green spaces.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-item scroll-animate" data-category="Infrastructure">
+                        <div class="portfolio-card">
+                            <div class="portfolio-image">
+                                <div class="image-overlay"></div>
+                                <div class="image-bg bg-bridge"></div>
+                            </div>
+                            <div class="portfolio-content">
+                                <h3 class="portfolio-title">City Bridge Reconstruction</h3>
+                                <div class="portfolio-category">Infrastructure</div>
+                                <div class="portfolio-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Year:</span>
+                                        <span class="detail-value">2022</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Value:</span>
+                                        <span class="detail-value">$28M</span>
+                                    </div>
+                                </div>
+                                <p class="portfolio-description">Complete reconstruction of major city bridge with enhanced load capacity and safety features.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-item scroll-animate" data-category="Healthcare">
+                        <div class="portfolio-card">
+                            <div class="portfolio-image">
+                                <div class="image-overlay"></div>
+                                <div class="image-bg bg-hospital"></div>
+                            </div>
+                            <div class="portfolio-content">
+                                <h3 class="portfolio-title">Regional Medical Center</h3>
+                                <div class="portfolio-category">Healthcare</div>
+                                <div class="portfolio-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Year:</span>
+                                        <span class="detail-value">2022</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Value:</span>
+                                        <span class="detail-value">$120M</span>
+                                    </div>
+                                </div>
+                                <p class="portfolio-description">State-of-the-art 200-bed hospital with advanced medical facilities and emergency services.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-item scroll-animate" data-category="Educational">
+                        <div class="portfolio-card">
+                            <div class="portfolio-image">
+                                <div class="image-overlay"></div>
+                                <div class="image-bg bg-campus"></div>
+                            </div>
+                            <div class="portfolio-content">
+                                <h3 class="portfolio-title">Innovation Campus</h3>
+                                <div class="portfolio-category">Educational</div>
+                                <div class="portfolio-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Year:</span>
+                                        <span class="detail-value">2021</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Value:</span>
+                                        <span class="detail-value">$95M</span>
+                                    </div>
+                                </div>
+                                <p class="portfolio-description">Modern university campus with LEED-certified buildings and smart technology integration.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-item scroll-animate" data-category="Residential">
+                        <div class="portfolio-card">
+                            <div class="portfolio-image">
+                                <div class="image-overlay"></div>
+                                <div class="image-bg bg-mansion"></div>
+                            </div>
+                            <div class="portfolio-content">
+                                <h3 class="portfolio-title">Luxury Mansion Estate</h3>
+                                <div class="portfolio-category">Residential</div>
+                                <div class="portfolio-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Year:</span>
+                                        <span class="detail-value">2021</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Value:</span>
+                                        <span class="detail-value">$8M</span>
+                                    </div>
+                                </div>
+                                <p class="portfolio-description">15,000 sq ft custom home with luxury amenities and sustainable features.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="section testimonials-section">
+            <div class="section-bg parallax-bg"></div>
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Client <span class="text-accent">Testimonials</span></h2>
+                    <p class="section-subtitle">What our clients say about working with us</p>
+                </div>
+                <div class="testimonials-slider">
+                    <div class="testimonials-track">
+                        <div class="testimonial-item active">
+                            <div class="testimonial-card">
+                                <div class="testimonial-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="testimonial-text">"SkyLine Construction exceeded our expectations in every aspect. Their attention to detail and commitment to quality is unmatched."</p>
+                                <div class="testimonial-author">
+                                    <div class="author-name">Robert Johnson</div>
+                                    <div class="author-company">Metro City Development</div>
+                                    <div class="author-project">Metropolitan Office Tower</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-item">
+                            <div class="testimonial-card">
+                                <div class="testimonial-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="testimonial-text">"Professional, reliable, and delivered on time. The quality of workmanship is exceptional. Highly recommend their services."</p>
+                                <div class="testimonial-author">
+                                    <div class="author-name">Lisa Martinez</div>
+                                    <div class="author-company">Riverside Properties</div>
+                                    <div class="author-project">Riverside Residential Complex</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-item">
+                            <div class="testimonial-card">
+                                <div class="testimonial-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="testimonial-text">"Building a hospital requires precision and expertise. SkyLine demonstrated both throughout the entire project lifecycle."</p>
+                                <div class="testimonial-author">
+                                    <div class="author-name">Dr. Patricia Adams</div>
+                                    <div class="author-company">Regional Medical Center</div>
+                                    <div class="author-project">Medical Center Construction</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-item">
+                            <div class="testimonial-card">
+                                <div class="testimonial-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="testimonial-text">"Our dream home became reality thanks to SkyLine's dedication and craftsmanship. Every detail was perfect."</p>
+                                <div class="testimonial-author">
+                                    <div class="author-name">James Wilson</div>
+                                    <div class="author-company">Private Client</div>
+                                    <div class="author-project">Luxury Estate</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-controls">
+                        <button class="control-btn prev-btn" aria-label="Previous testimonial">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="testimonial-dots"></div>
+                        <button class="control-btn next-btn" aria-label="Next testimonial">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section contact-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Get In <span class="text-accent">Touch</span></h2>
+                    <p class="section-subtitle">Let's discuss your construction project</p>
+                </div>
+                <div class="contact-grid">
+                    <div class="contact-info scroll-animate">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="info-content">
+                                <h3 class="info-title">Phone</h3>
+                                <p class="info-text">+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="info-content">
+                                <h3 class="info-title">Email</h3>
+                                <p class="info-text">info@skylineconstruction.com</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="info-content">
+                                <h3 class="info-title">Main Office</h3>
+                                <p class="info-text">123 Construction Ave, Metro City, MC 12345</p>
+                            </div>
+                        </div>
+                        <div class="office-locations">
+                            <h3 class="title-accent">Our Offices</h3>
+                            <div class="office-grid">
+                                <div class="office-card">
+                                    <h4 class="office-city">Metro City</h4>
+                                    <p class="office-address">123 Construction Ave, Metro City, MC 12345</p>
+                                    <p class="office-phone">+1 (555) 123-4567</p>
+                                </div>
+                                <div class="office-card">
+                                    <h4 class="office-city">Riverside</h4>
+                                    <p class="office-address">456 Builder St, Riverside, RS 67890</p>
+                                    <p class="office-phone">+1 (555) 987-6543</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-form-container scroll-animate">
+                        <form id="contactForm" class="contact-form">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" id="name" name="name" class="form-control" required>
+                                <div class="form-feedback"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                                <div class="form-feedback"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="tel" id="phone" name="phone" class="form-control">
+                                <div class="form-feedback"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="projectType" class="form-label">Project Type</label>
+                                <select id="projectType" name="projectType" class="form-control">
+                                    <option value="">Select Project Type</option>
+                                    <option value="Commercial">Commercial</option>
+                                    <option value="Residential">Residential</option>
+                                    <option value="Infrastructure">Infrastructure</option>
+                                    <option value="Renovation">Renovation</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea id="message" name="message" class="form-control" rows="5" required></textarea>
+                                <div class="form-feedback"></div>
+                            </div>
+                            <div class="form-submit">
+                                <button type="submit" class="btn btn-primary btn--full-width">
+                                    <span class="btn-text">Send Message</span>
+                                    <span class="btn-icon"><i class="fas fa-paper-plane"></i></span>
+                                </button>
+                            </div>
+                        </form>
+                        <div class="form-success-message">
+                            <div class="success-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3 class="success-title">Message Sent!</h3>
+                            <p class="success-text">Thank you for contacting SkyLine Construction Group. We will get back to you as soon as possible.</p>
+                            <button class="btn btn-secondary reset-form">Send Another Message</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="logo-text">Sky<span class="text-accent">Line</span></span>
+                    </div>
+                    <p class="footer-tagline">Building Tomorrow's Legacy Today</p>
+                    <p class="footer-description">Premier construction company specializing in commercial, residential, and infrastructure projects with over 15 years of industry excellence.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h3 class="footer-heading">Navigation</h3>
+                        <ul class="footer-nav">
+                            <li><a href="#home">Home</a></li>
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#services">Services</a></li>
+                            <li><a href="#portfolio">Portfolio</a></li>
+                            <li><a href="#testimonials">Testimonials</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3 class="footer-heading">Services</h3>
+                        <ul class="footer-nav">
+                            <li><a href="#services">General Contracting</a></li>
+                            <li><a href="#services">Design-Build</a></li>
+                            <li><a href="#services">Commercial Construction</a></li>
+                            <li><a href="#services">Residential Construction</a></li>
+                            <li><a href="#services">Infrastructure Development</a></li>
+                            <li><a href="#services">Renovation & Remodeling</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3 class="footer-heading">Contact</h3>
+                        <ul class="footer-contact">
+                            <li>
+                                <i class="fas fa-phone"></i>
+                                <span>+1 (555) 123-4567</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-envelope"></i>
+                                <span>info@skylineconstruction.com</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>123 Construction Ave, Metro City, MC 12345</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="copyright">
+                    <p>&copy; 2025 SkyLine Construction Group. All rights reserved.</p>
+                </div>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
