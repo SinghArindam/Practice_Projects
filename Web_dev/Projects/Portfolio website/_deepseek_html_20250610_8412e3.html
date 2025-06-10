@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dev Portfolio | Arindam Singh</title>
+    <title>Dev Portfolio | Premium Design</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
@@ -29,8 +29,8 @@
         .light-mode {
             --amoled-black: #ffffff;
             --amoled-white: #000000;
-            --text-primary: #ffffff;
-            --text-secondary: #cccccc;
+            --text-primary: #000000;
+            --text-secondary: #333333;
             --bg-primary: #ffffff;
             --bg-secondary: #f0f0f0;
             --card-bg: rgba(245, 245, 245, 0.9);
@@ -128,18 +128,66 @@
             width: 100%;
         }
 
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            cursor: pointer;
-            font-size: 1.5rem;
-            transition: var(--transition);
+        /* NEW THEME TOGGLE STYLE */
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .theme-toggle:hover {
-            color: var(--amoled-golden);
-            transform: rotate(20deg);
+        .theme-toggle-label {
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .theme-toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .theme-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .theme-toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #374151;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .theme-toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: var(--amoled-golden);
+            transition: .4s;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #000;
+        }
+
+        input:checked + .theme-toggle-slider {
+            background-color: #9ca3af;
+        }
+
+        input:checked + .theme-toggle-slider:before {
+            transform: translateX(26px);
         }
 
         /* Hero Section */
@@ -492,6 +540,29 @@
                 width: 100%;
                 text-align: center;
             }
+            
+            /* Adjust theme toggle for mobile */
+            .theme-toggle-container {
+                gap: 0.3rem;
+            }
+            
+            .theme-toggle-label {
+                font-size: 1.2rem;
+            }
+            
+            .theme-toggle {
+                width: 50px;
+                height: 28px;
+            }
+            
+            .theme-toggle-slider:before {
+                height: 20px;
+                width: 20px;
+            }
+            
+            input:checked + .theme-toggle-slider:before {
+                transform: translateX(22px);
+            }
         }
 
         @media (max-width: 576px) {
@@ -528,22 +599,29 @@
                 <li><a href="#">Contact</a></li>
             </ul>
         </nav>
-        <button class="theme-toggle" id="themeToggle">
-            <i class="fas fa-moon"></i>
-        </button>
+        
+        <!-- Updated Theme Toggle -->
+        <div class="theme-toggle-container">
+            <span class="theme-toggle-label">🌙</span>
+            <label class="theme-toggle">
+                <input type="checkbox" id="themeToggle">
+                <span class="theme-toggle-slider"></span>
+            </label>
+            <span class="theme-toggle-label">☀️</span>
+        </div>
     </header>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
             <h2 class="hero-subtitle">Hello, I'm</h2>
-            <h1 class="hero-title">Arindam <span class="typewriter">Singh</span></h1>
+            <h1 class="hero-title">Alex <span class="typewriter">Morgan</span></h1>
             <p class="hero-description">
-                A Full-Stack Developer, AI/ML Enthusiast, Python Dev, and Electronics Engineer - creating immersive digital experiences. I transform complex problems into elegant solutions.
+                A Senior Full-Stack Developer & UI/UX Designer with over 8 years of experience creating immersive digital experiences. I transform complex problems into elegant solutions.
             </p>
             <div class="cta-buttons">
-                <a href="#projects" class="btn btn-primary">View Projects</a>
-                <a href="#contact" class="btn btn-secondary">Contact Me</a>
+                <a href="#" class="btn btn-primary">View Projects</a>
+                <a href="#" class="btn btn-secondary">Contact Me</a>
             </div>
         </div>
     </section>
@@ -552,8 +630,7 @@
     <section class="projects" id="projects">
         <div class="section-header">
             <h2 class="section-title">Featured <span class="highlight">Projects</span></h2>
-            <pre><p class="section-subtitle">A showcase of my immersive works with cutting-edge 
-technologies and innovative designs</p></pre>
+            <p class="section-subtitle">A showcase of my premium work with cutting-edge technologies and innovative designs</p>
         </div>
         <div class="projects-container">
             <!-- Project 1 -->
@@ -626,8 +703,6 @@ technologies and innovative designs</p></pre>
         </div>
     </section>
 
-
-    
     <!-- Footer -->
     <footer>
         <div class="social-links">
@@ -637,7 +712,7 @@ technologies and innovative designs</p></pre>
             <a href="#" class="social-link"><i class="fab fa-behance"></i></a>
             <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
         </div>
-        <p class="copyright">© 2025 Arindam Singh. All rights reserved. Crafted with <span class="highlight">❤</span></p>
+        <p class="copyright">© 2023 Alex Morgan. All rights reserved. Crafted with <span class="highlight">❤</span></p>
     </footer>
 
     <script>
@@ -658,18 +733,16 @@ technologies and innovative designs</p></pre>
 
         // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = themeToggle.querySelector('i');
         
-        themeToggle.addEventListener('click', () => {
+        // Set initial theme based on preference
+        const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (!prefersDarkMode) {
+            document.body.classList.add('light-mode');
+            themeToggle.checked = true;
+        }
+        
+        themeToggle.addEventListener('change', () => {
             document.body.classList.toggle('light-mode');
-            
-            if (document.body.classList.contains('light-mode')) {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-            } else {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-            }
         });
 
         // Project card 3D effect
@@ -697,7 +770,7 @@ technologies and innovative designs</p></pre>
 
         // Typewriter effect simulation
         const typewriter = document.querySelector('.typewriter');
-        const text = "Singh";
+        const text = "Morgan";
         let index = 0;
         
         function typeEffect() {
