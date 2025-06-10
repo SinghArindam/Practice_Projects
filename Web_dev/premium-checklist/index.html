@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Purchase Checklist</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- PIN Entry Screen -->
+    <div id="pinScreen" class="pin-screen">
+        <div class="pin-container">
+            <div class="pin-logo">
+                <div class="logo-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M9 11H15M9 15H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L19.7071 9.70711C19.8946 9.89464 20 10.149 20 10.4142V19C20 20.1046 19.1046 21 18 21H17Z"/>
+                    </svg>
+                </div>
+                <h1 class="pin-title">Premium Checklist</h1>
+                <p class="pin-subtitle">Enter your PIN to access</p>
+            </div>
+            
+            <div class="pin-input-container">
+                <div class="pin-dots">
+                    <div class="pin-dot" data-index="0"></div>
+                    <div class="pin-dot" data-index="1"></div>
+                    <div class="pin-dot" data-index="2"></div>
+                    <div class="pin-dot" data-index="3"></div>
+                </div>
+                <input type="password" id="pinInput" class="pin-input" maxlength="4" autocomplete="off">
+            </div>
+            
+            <div class="pin-keypad">
+                <button class="keypad-btn" data-digit="1">1</button>
+                <button class="keypad-btn" data-digit="2">2</button>
+                <button class="keypad-btn" data-digit="3">3</button>
+                <button class="keypad-btn" data-digit="4">4</button>
+                <button class="keypad-btn" data-digit="5">5</button>
+                <button class="keypad-btn" data-digit="6">6</button>
+                <button class="keypad-btn" data-digit="7">7</button>
+                <button class="keypad-btn" data-digit="8">8</button>
+                <button class="keypad-btn" data-digit="9">9</button>
+                <button class="keypad-btn keypad-btn--empty"></button>
+                <button class="keypad-btn" data-digit="0">0</button>
+                <button class="keypad-btn keypad-btn--delete" data-action="delete">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+                        <line x1="18" y1="9" x2="12" y2="15"/>
+                        <line x1="12" y1="9" x2="18" y2="15"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="pin-error" id="pinError">Incorrect PIN. Please try again.</div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="main-app hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="header-left">
+                        <h1 class="app-title">Premium Checklist</h1>
+                        <div class="header-stats">
+                            <span class="stat-item">
+                                <span class="stat-value" id="totalItems">0</span>
+                                <span class="stat-label">Items</span>
+                            </span>
+                            <span class="stat-item">
+                                <span class="stat-value" id="completedItems">0</span>
+                                <span class="stat-label">Done</span>
+                            </span>
+                            <span class="stat-item">
+                                <span class="stat-value" id="totalValue">$0</span>
+                                <span class="stat-label">Total</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <button class="btn btn--secondary" id="darkModeToggle">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                            </svg>
+                        </button>
+                        <button class="btn btn--primary" id="addItemBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Add Item
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Controls -->
+        <div class="controls-section">
+            <div class="container">
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search items...">
+                    </div>
+                    <div class="control-group">
+                        <select id="categoryFilter" class="form-control">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <select id="priorityFilter" class="form-control">
+                            <option value="">All Priorities</option>
+                            <option value="High">High Priority</option>
+                            <option value="Medium">Medium Priority</option>
+                            <option value="Low">Low Priority</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <select id="sortBy" class="form-control">
+                            <option value="dateAdded">Date Added</option>
+                            <option value="name">Name</option>
+                            <option value="price">Price</option>
+                            <option value="priority">Priority</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container">
+                <div class="checklist-container">
+                    <div id="itemsList" class="items-list">
+                        <!-- Items will be rendered here -->
+                    </div>
+                    
+                    <div id="emptyState" class="empty-state">
+                        <div class="empty-icon">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                                <path d="M9 11H15M9 15H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L19.7071 9.70711C19.8946 9.89464 20 10.149 20 10.4142V19C20 20.1046 19.1046 21 18 21H17Z"/>
+                            </svg>
+                        </div>
+                        <h3>Your checklist is empty</h3>
+                        <p>Add your first item to get started</p>
+                        <button class="btn btn--primary" id="addFirstItemBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Add First Item
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Item Modal -->
+    <div id="itemModal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Item</h2>
+                <button class="modal-close" id="modalClose">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="itemForm" class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Item Name *</label>
+                    <input type="text" id="itemName" class="form-control" required>
+                    <div class="suggestions" id="suggestions"></div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Price *</label>
+                        <div class="price-input">
+                            <span class="price-symbol">$</span>
+                            <input type="number" id="itemPrice" class="form-control" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select id="itemPriority" class="form-control">
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select id="itemCategory" class="form-control">
+                        <!-- Categories will be populated -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea id="itemNotes" class="form-control" rows="3" placeholder="Additional notes..."></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn--secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn--primary" id="saveBtn">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-content--small">
+            <div class="modal-header">
+                <h2 id="confirmTitle">Confirm Action</h2>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Are you sure you want to perform this action?</p>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn--secondary" id="confirmCancel">Cancel</button>
+                    <button type="button" class="btn btn--primary" id="confirmOk">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

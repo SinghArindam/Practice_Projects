@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mac OS Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Menu Bar -->
+    <div class="menu-bar">
+        <div class="menu-bar__left">
+            <div class="menu-bar__apple">🍎</div>
+            <div class="menu-bar__item">File</div>
+            <div class="menu-bar__item">Edit</div>
+            <div class="menu-bar__item">View</div>
+            <div class="menu-bar__item">Window</div>
+        </div>
+        <div class="menu-bar__right">
+            <div class="menu-bar__item">📶</div>
+            <div class="menu-bar__item">🔋 85%</div>
+            <div class="menu-bar__time" id="menu-time">12:00 PM</div>
+        </div>
+    </div>
+
+    <!-- Desktop -->
+    <div class="desktop" id="desktop">
+        <div class="desktop__wallpaper"></div>
+
+        <!-- Calculator App Window -->
+        <div class="window" id="calculator-window" data-app="calculator">
+            <div class="window__titlebar">
+                <div class="window__controls">
+                    <button class="window__control window__control--close"></button>
+                    <button class="window__control window__control--minimize"></button>
+                    <button class="window__control window__control--maximize"></button>
+                </div>
+                <div class="window__title">Calculator</div>
+            </div>
+            <div class="window__content">
+                <div class="calculator">
+                    <div class="calculator__display">
+                        <input type="text" id="calc-display" value="0" readonly>
+                    </div>
+                    <div class="calculator__buttons">
+                        <button class="calculator__btn calculator__btn--operator" data-action="clear">C</button>
+                        <button class="calculator__btn calculator__btn--operator" data-action="sign">±</button>
+                        <button class="calculator__btn calculator__btn--operator" data-action="percent">%</button>
+                        <button class="calculator__btn calculator__btn--operator" data-action="divide">÷</button>
+                        
+                        <button class="calculator__btn" data-number="7">7</button>
+                        <button class="calculator__btn" data-number="8">8</button>
+                        <button class="calculator__btn" data-number="9">9</button>
+                        <button class="calculator__btn calculator__btn--operator" data-action="multiply">×</button>
+                        
+                        <button class="calculator__btn" data-number="4">4</button>
+                        <button class="calculator__btn" data-number="5">5</button>
+                        <button class="calculator__btn" data-number="6">6</button>
+                        <button class="calculator__btn calculator__btn--operator" data-action="subtract">−</button>
+                        
+                        <button class="calculator__btn" data-number="1">1</button>
+                        <button class="calculator__btn" data-number="2">2</button>
+                        <button class="calculator__btn" data-number="3">3</button>
+                        <button class="calculator__btn calculator__btn--operator" data-action="add">+</button>
+                        
+                        <button class="calculator__btn calculator__btn--zero" data-number="0">0</button>
+                        <button class="calculator__btn" data-action="decimal">.</button>
+                        <button class="calculator__btn calculator__btn--operator" data-action="equals">=</button>
+                    </div>
+                </div>
+            </div>
+            <div class="window__resize-handles">
+                <div class="resize-handle resize-handle--n"></div>
+                <div class="resize-handle resize-handle--s"></div>
+                <div class="resize-handle resize-handle--e"></div>
+                <div class="resize-handle resize-handle--w"></div>
+                <div class="resize-handle resize-handle--ne"></div>
+                <div class="resize-handle resize-handle--nw"></div>
+                <div class="resize-handle resize-handle--se"></div>
+                <div class="resize-handle resize-handle--sw"></div>
+            </div>
+        </div>
+
+        <!-- Notes App Window -->
+        <div class="window" id="notes-window" data-app="notes">
+            <div class="window__titlebar">
+                <div class="window__controls">
+                    <button class="window__control window__control--close"></button>
+                    <button class="window__control window__control--minimize"></button>
+                    <button class="window__control window__control--maximize"></button>
+                </div>
+                <div class="window__title">Notes</div>
+            </div>
+            <div class="window__content">
+                <div class="notes">
+                    <div class="notes__toolbar">
+                        <button class="btn btn--sm" id="notes-new">New Note</button>
+                        <button class="btn btn--sm" id="notes-save">Save</button>
+                    </div>
+                    <textarea class="notes__textarea" id="notes-content" placeholder="Start writing your note..."></textarea>
+                </div>
+            </div>
+            <div class="window__resize-handles">
+                <div class="resize-handle resize-handle--n"></div>
+                <div class="resize-handle resize-handle--s"></div>
+                <div class="resize-handle resize-handle--e"></div>
+                <div class="resize-handle resize-handle--w"></div>
+                <div class="resize-handle resize-handle--ne"></div>
+                <div class="resize-handle resize-handle--nw"></div>
+                <div class="resize-handle resize-handle--se"></div>
+                <div class="resize-handle resize-handle--sw"></div>
+            </div>
+        </div>
+
+        <!-- Sketch App Window -->
+        <div class="window" id="sketch-window" data-app="sketch">
+            <div class="window__titlebar">
+                <div class="window__controls">
+                    <button class="window__control window__control--close"></button>
+                    <button class="window__control window__control--minimize"></button>
+                    <button class="window__control window__control--maximize"></button>
+                </div>
+                <div class="window__title">Sketch</div>
+            </div>
+            <div class="window__content">
+                <div class="sketch">
+                    <div class="sketch__toolbar">
+                        <div class="sketch__tool-group">
+                            <label>Brush Size:</label>
+                            <input type="range" id="brush-size" min="1" max="50" value="5">
+                            <span id="brush-size-display">5px</span>
+                        </div>
+                        <div class="sketch__tool-group">
+                            <label>Color:</label>
+                            <input type="color" id="brush-color" value="#000000">
+                        </div>
+                        <button class="btn btn--sm" id="clear-canvas">Clear</button>
+                    </div>
+                    <canvas id="sketch-canvas" width="600" height="400"></canvas>
+                </div>
+            </div>
+            <div class="window__resize-handles">
+                <div class="resize-handle resize-handle--n"></div>
+                <div class="resize-handle resize-handle--s"></div>
+                <div class="resize-handle resize-handle--e"></div>
+                <div class="resize-handle resize-handle--w"></div>
+                <div class="resize-handle resize-handle--ne"></div>
+                <div class="resize-handle resize-handle--nw"></div>
+                <div class="resize-handle resize-handle--se"></div>
+                <div class="resize-handle resize-handle--sw"></div>
+            </div>
+        </div>
+
+        <!-- Music Player Window -->
+        <div class="window" id="music-window" data-app="music">
+            <div class="window__titlebar">
+                <div class="window__controls">
+                    <button class="window__control window__control--close"></button>
+                    <button class="window__control window__control--minimize"></button>
+                    <button class="window__control window__control--maximize"></button>
+                </div>
+                <div class="window__title">Music Player</div>
+            </div>
+            <div class="window__content">
+                <div class="music-player">
+                    <div class="music-player__file-section">
+                        <input type="file" id="audio-file-input" accept=".mp3,.wav,.m4a,.ogg" multiple style="display: none;">
+                        <button class="btn btn--primary" id="load-audio-btn">Load Audio Files</button>
+                    </div>
+                    <div class="music-player__info">
+                        <div class="music-player__track-name" id="track-name">No audio loaded</div>
+                        <div class="music-player__track-meta" id="track-meta"></div>
+                    </div>
+                    <div class="music-player__controls">
+                        <button class="music-player__btn" id="prev-btn">⏮️</button>
+                        <button class="music-player__btn music-player__btn--play" id="play-btn">▶️</button>
+                        <button class="music-player__btn" id="next-btn">⏭️</button>
+                    </div>
+                    <div class="music-player__progress">
+                        <span class="music-player__time" id="current-time">0:00</span>
+                        <input type="range" class="music-player__progress-bar" id="progress-bar" min="0" max="100" value="0">
+                        <span class="music-player__time" id="total-time">0:00</span>
+                    </div>
+                    <div class="music-player__volume">
+                        <span>🔊</span>
+                        <input type="range" class="music-player__volume-bar" id="volume-bar" min="0" max="100" value="50">
+                    </div>
+                    <div class="music-player__playlist" id="playlist"></div>
+                    <audio id="audio-player"></audio>
+                </div>
+            </div>
+            <div class="window__resize-handles">
+                <div class="resize-handle resize-handle--n"></div>
+                <div class="resize-handle resize-handle--s"></div>
+                <div class="resize-handle resize-handle--e"></div>
+                <div class="resize-handle resize-handle--w"></div>
+                <div class="resize-handle resize-handle--ne"></div>
+                <div class="resize-handle resize-handle--nw"></div>
+                <div class="resize-handle resize-handle--se"></div>
+                <div class="resize-handle resize-handle--sw"></div>
+            </div>
+        </div>
+
+        <!-- Terminal Window -->
+        <div class="window" id="terminal-window" data-app="terminal">
+            <div class="window__titlebar">
+                <div class="window__controls">
+                    <button class="window__control window__control--close"></button>
+                    <button class="window__control window__control--minimize"></button>
+                    <button class="window__control window__control--maximize"></button>
+                </div>
+                <div class="window__title">Terminal</div>
+            </div>
+            <div class="window__content">
+                <div class="terminal">
+                    <div class="terminal__output" id="terminal-output">
+                        <div class="terminal__line">Last login: Sun Jun 8 06:02:00 on console</div>
+                        <div class="terminal__line">Welcome to macOS Terminal Simulator</div>
+                        <div class="terminal__line">user@macbook:~$ <span class="terminal__cursor"></span></div>
+                    </div>
+                    <div class="terminal__input-line">
+                        <span class="terminal__prompt">user@macbook:~$ </span>
+                        <input type="text" class="terminal__input" id="terminal-input" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+            <div class="window__resize-handles">
+                <div class="resize-handle resize-handle--n"></div>
+                <div class="resize-handle resize-handle--s"></div>
+                <div class="resize-handle resize-handle--e"></div>
+                <div class="resize-handle resize-handle--w"></div>
+                <div class="resize-handle resize-handle--ne"></div>
+                <div class="resize-handle resize-handle--nw"></div>
+                <div class="resize-handle resize-handle--se"></div>
+                <div class="resize-handle resize-handle--sw"></div>
+            </div>
+        </div>
+
+        <!-- Finder Window -->
+        <div class="window" id="finder-window" data-app="finder">
+            <div class="window__titlebar">
+                <div class="window__controls">
+                    <button class="window__control window__control--close"></button>
+                    <button class="window__control window__control--minimize"></button>
+                    <button class="window__control window__control--maximize"></button>
+                </div>
+                <div class="window__title">Finder</div>
+            </div>
+            <div class="window__content">
+                <div class="finder">
+                    <div class="finder__sidebar">
+                        <div class="finder__section">
+                            <div class="finder__section-title">Favorites</div>
+                            <div class="finder__item">🏠 Home</div>
+                            <div class="finder__item">📁 Documents</div>
+                            <div class="finder__item">📁 Downloads</div>
+                            <div class="finder__item">🖼️ Pictures</div>
+                            <div class="finder__item">🎵 Music</div>
+                        </div>
+                    </div>
+                    <div class="finder__main">
+                        <div class="finder__toolbar">
+                            <button class="btn btn--sm">← Back</button>
+                            <button class="btn btn--sm">Forward →</button>
+                            <div class="finder__path">~ Home</div>
+                        </div>
+                        <div class="finder__content">
+                            <div class="finder__file">📁 Desktop</div>
+                            <div class="finder__file">📁 Documents</div>
+                            <div class="finder__file">📁 Downloads</div>
+                            <div class="finder__file">📄 README.txt</div>
+                            <div class="finder__file">🖼️ wallpaper.jpg</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="window__resize-handles">
+                <div class="resize-handle resize-handle--n"></div>
+                <div class="resize-handle resize-handle--s"></div>
+                <div class="resize-handle resize-handle--e"></div>
+                <div class="resize-handle resize-handle--w"></div>
+                <div class="resize-handle resize-handle--ne"></div>
+                <div class="resize-handle resize-handle--nw"></div>
+                <div class="resize-handle resize-handle--se"></div>
+                <div class="resize-handle resize-handle--sw"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dock -->
+    <div class="dock">
+        <div class="dock__apps">
+            <div class="dock__app" data-app="calculator" title="Calculator">
+                <div class="dock__app-icon">🧮</div>
+            </div>
+            <div class="dock__app" data-app="notes" title="Notes">
+                <div class="dock__app-icon">📝</div>
+            </div>
+            <div class="dock__app" data-app="sketch" title="Sketch">
+                <div class="dock__app-icon">🎨</div>
+            </div>
+            <div class="dock__app" data-app="music" title="Music">
+                <div class="dock__app-icon">🎵</div>
+            </div>
+            <div class="dock__app" data-app="terminal" title="Terminal">
+                <div class="dock__app-icon">⚡</div>
+            </div>
+            <div class="dock__app" data-app="finder" title="Finder">
+                <div class="dock__app-icon">📁</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>macOS Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Desktop Container -->
+    <div id="desktop">
+        <!-- Menu Bar -->
+        <div id="menubar">
+            <div class="menubar-left">
+                <div class="apple-logo">🍎</div>
+                <div class="app-name">macOS Simulator</div>
+            </div>
+            <div class="menubar-right">
+                <div class="system-info">
+                    <span class="wifi-icon">📶</span>
+                    <span class="battery-icon">🔋</span>
+                    <span class="time" id="currentTime"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Background -->
+        <div class="desktop-background"></div>
+
+        <!-- Windows Container -->
+        <div id="windows-container"></div>
+
+        <!-- Dock -->
+        <div id="dock">
+            <div class="dock-content">
+                <div class="dock-item" data-app="calculator" title="Calculator">
+                    <span class="dock-icon">🧮</span>
+                </div>
+                <div class="dock-item" data-app="notes" title="Notes">
+                    <span class="dock-icon">📝</span>
+                </div>
+                <div class="dock-item" data-app="sketch" title="Sketch">
+                    <span class="dock-icon">🎨</span>
+                </div>
+                <div class="dock-item" data-app="music" title="Music">
+                    <span class="dock-icon">🎵</span>
+                </div>
+                <div class="dock-item" data-app="terminal" title="Terminal">
+                    <span class="dock-icon">⚫</span>
+                </div>
+                <div class="dock-item" data-app="finder" title="Finder">
+                    <span class="dock-icon">📁</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Window Templates -->
+    <template id="window-template">
+        <div class="window">
+            <div class="window-header">
+                <div class="window-controls">
+                    <button class="control-btn close-btn"></button>
+                    <button class="control-btn minimize-btn"></button>
+                    <button class="control-btn maximize-btn"></button>
+                </div>
+                <div class="window-title"></div>
+            </div>
+            <div class="window-content"></div>
+        </div>
+    </template>
+
+    <!-- Calculator App Template -->
+    <template id="calculator-template">
+        <div class="calculator-app">
+            <div class="calculator-display">
+                <div class="display-value">0</div>
+            </div>
+            <div class="calculator-buttons">
+                <button class="calc-btn clear">AC</button>
+                <button class="calc-btn operator">±</button>
+                <button class="calc-btn operator">%</button>
+                <button class="calc-btn operator">÷</button>
+                
+                <button class="calc-btn number">7</button>
+                <button class="calc-btn number">8</button>
+                <button class="calc-btn number">9</button>
+                <button class="calc-btn operator">×</button>
+                
+                <button class="calc-btn number">4</button>
+                <button class="calc-btn number">5</button>
+                <button class="calc-btn number">6</button>
+                <button class="calc-btn operator">−</button>
+                
+                <button class="calc-btn number">1</button>
+                <button class="calc-btn number">2</button>
+                <button class="calc-btn number">3</button>
+                <button class="calc-btn operator">+</button>
+                
+                <button class="calc-btn number zero">0</button>
+                <button class="calc-btn number">.</button>
+                <button class="calc-btn equals">=</button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Notes App Template -->
+    <template id="notes-template">
+        <div class="notes-app">
+            <div class="notes-sidebar">
+                <div class="notes-header">
+                    <h3>Notes</h3>
+                    <button class="new-note-btn">+</button>
+                </div>
+                <div class="notes-list"></div>
+            </div>
+            <div class="notes-editor">
+                <div class="note-title-input">
+                    <input type="text" placeholder="Note title..." class="note-title">
+                </div>
+                <div class="note-content-input">
+                    <textarea placeholder="Start writing..." class="note-content"></textarea>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Sketch App Template -->
+    <template id="sketch-template">
+        <div class="sketch-app">
+            <div class="sketch-toolbar">
+                <div class="tool-group">
+                    <button class="tool-btn active" data-tool="pen">✏️</button>
+                    <button class="tool-btn" data-tool="brush">🖌️</button>
+                    <button class="tool-btn" data-tool="eraser">🧽</button>
+                </div>
+                <div class="color-group">
+                    <input type="color" class="color-picker" value="#000000">
+                </div>
+                <div class="size-group">
+                    <input type="range" class="size-slider" min="1" max="20" value="3">
+                </div>
+                <button class="clear-btn">Clear</button>
+            </div>
+            <div class="sketch-canvas-container">
+                <canvas class="sketch-canvas" width="600" height="400"></canvas>
+            </div>
+        </div>
+    </template>
+
+    <!-- Music App Template -->
+    <template id="music-template">
+        <div class="music-app">
+            <div class="music-header">
+                <div class="album-art">🎵</div>
+                <div class="track-info">
+                    <div class="track-title">Demo Track 1</div>
+                    <div class="track-artist">Sample Artist</div>
+                </div>
+            </div>
+            <div class="music-controls">
+                <div class="control-buttons">
+                    <button class="music-btn prev-btn">⏮️</button>
+                    <button class="music-btn play-btn">▶️</button>
+                    <button class="music-btn next-btn">⏭️</button>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-track">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="time-display">
+                        <span class="current-time">0:00</span>
+                        <span class="total-time">3:45</span>
+                    </div>
+                </div>
+                <div class="volume-control">
+                    <span class="volume-icon">🔊</span>
+                    <input type="range" class="volume-slider" min="0" max="100" value="75">
+                </div>
+            </div>
+            <div class="playlist">
+                <h4>Playlist</h4>
+                <div class="playlist-items"></div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Terminal App Template -->
+    <template id="terminal-template">
+        <div class="terminal-app">
+            <div class="terminal-output"></div>
+            <div class="terminal-input-line">
+                <span class="terminal-prompt">user@macOS-Simulator ~ % </span>
+                <input type="text" class="terminal-input" autocomplete="off">
+            </div>
+        </div>
+    </template>
+
+    <!-- Finder App Template -->
+    <template id="finder-template">
+        <div class="finder-app">
+            <div class="finder-sidebar">
+                <div class="sidebar-section">
+                    <h4>Favorites</h4>
+                    <div class="sidebar-item active" data-path="/">Desktop</div>
+                    <div class="sidebar-item" data-path="/documents">Documents</div>
+                    <div class="sidebar-item" data-path="/downloads">Downloads</div>
+                    <div class="sidebar-item" data-path="/applications">Applications</div>
+                </div>
+            </div>
+            <div class="finder-main">
+                <div class="finder-toolbar">
+                    <div class="navigation-buttons">
+                        <button class="nav-btn back-btn">←</button>
+                        <button class="nav-btn forward-btn">→</button>
+                    </div>
+                    <div class="path-display">Desktop</div>
+                    <div class="view-controls">
+                        <button class="view-btn active" data-view="grid">⊞</button>
+                        <button class="view-btn" data-view="list">☰</button>
+                    </div>
+                </div>
+                <div class="finder-content">
+                    <div class="file-grid"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="app.js"></script>
+</body>
+</html>
