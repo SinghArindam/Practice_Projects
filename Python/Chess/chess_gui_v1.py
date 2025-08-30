@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import customtkinter as ctk
 from PIL import Image, ImageTk
 import base64
@@ -723,7 +722,7 @@ class ChessGUI(ctk.CTk):
     def ai_move_worker(self):
         depth = MAX_DEPTH_DEFAULT
         ai_move = ChessAI.find_best_move_minimax(self.game_logic, self.valid_moves, depth)
-        time.sleep(random.uniform(0.4, 0.8)) # Human-like delay
+        time.sleep(random.uniform(0.4, 0.8))
         self.after(0, self.execute_ai_move, ai_move)
 
     def execute_ai_move(self, ai_move):
@@ -806,7 +805,6 @@ class ChessGUI(ctk.CTk):
             self.after(2000, self.autoplay_loop)
 
 if __name__ == "__main__":
-    # This global is used by the AI to pass the best move from the thread
     next_move = None
     app = ChessGUI()
     app.mainloop()
