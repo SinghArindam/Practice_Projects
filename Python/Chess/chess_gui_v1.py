@@ -217,44 +217,36 @@ class ChessLogic:
             if move.end_col == 0: self.current_castling_rights['bqs'] = False
             elif move.end_col == 7: self.current_castling_rights['bks'] = False
 
-
     def get_valid_moves(self):
         moves = []
         self.in_check, self.pins, self.checks = self.check_for_pins_and_checks()
         king_row, king_col = self.white_king_location if self.white_to_move else self.black_king_location
 
-        if self.in_check:
-            if len(self.checks) == 1:
-                check = self.checks[0]
-                check_row, check_col = check[0], check[1]
-                piece_checking = self.board[check_row][check_col]
-                valid_squares = []
-                if piece_checking[1] == 'N':
-                    valid_squares = [(check_row, check_col)]
-                else:
-                    for i in range(1, 8):
-                        valid_square = (king_row + check[2] * i, king_col + check[3] * i)
-                        valid_squares.append(valid_square)
-                        if valid_square[0] == check_row and valid_square[1] == check_col: break
-                
-                moves = self.get_all_possible_moves()
-                moves = [move for move in moves if move.piece_moved[1] == 'K' or \
-                         (move.end_row, move.end_col) in valid_squares]
-            else: # Double check
-                self.get_king_moves(king_row, king_col, moves)
-        else:
-            moves = self.get_all_possible_moves()
-        
-        self.get_castle_moves(king_row, king_col, moves)
+        possible_moves = self.get_all_possible_moves()
+        self.get_castle_moves(king_row, king_col, possible_moves)
+
+        for move in possible_moves:
+            self.make_move(move)
+            self.white_to_move = not self.white_to_move
+            if not self.is_in_check():
+                moves.append(move)
+            self.white_to_move = not self.white_to_move
+            self.undo_move()
         
         if len(moves) == 0:
-            if self.in_check: self.checkmate = True
-            else: self.stalemate = True
+            if self.in_check:
+                self.checkmate = True
+            else:
+                self.stalemate = True
         else:
             self.checkmate = False
             self.stalemate = False
-            
+
         return moves
+
+    def is_in_check(self):
+        king_location = self.white_king_location if self.white_to_move else self.black_king_location
+        return self.is_square_attacked(king_location[0], king_location[1])
 
     def is_square_attacked(self, r, c):
         self.white_to_move = not self.white_to_move
@@ -373,14 +365,7 @@ class ChessLogic:
             if 0<=end_row<8 and 0<=end_col<8:
                 end_piece = self.board[end_row][end_col]
                 if end_piece[0] != ally_color:
-                    king_loc_backup = self.white_king_location if self.white_to_move else self.black_king_location
-                    if self.white_to_move: self.white_king_location = (end_row,end_col)
-                    else: self.black_king_location = (end_row,end_col)
-                    in_check, _, _ = self.check_for_pins_and_checks()
-                    if not in_check:
-                        moves.append(Move((r,c), (end_row,end_col), self.board))
-                    if self.white_to_move: self.white_king_location = king_loc_backup
-                    else: self.black_king_location = king_loc_backup
+                    moves.append(Move((r,c), (end_row,end_col), self.board))
 
     def get_straight_moves(self, r, c, moves, directions):
         piece_pinned = any(pin[0] == r and pin[1] == c for pin in self.pins)
@@ -504,7 +489,7 @@ class ChessAI:
 class ChessGUI(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.title("Gemini Chess")
+        self.title("Chess GUI")
         self.geometry("1100x750")
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
         ctk.set_appearance_mode("Dark")
